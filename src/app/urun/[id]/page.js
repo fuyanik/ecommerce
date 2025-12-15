@@ -2,7 +2,6 @@
 
 import { useState, useEffect, use } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
@@ -15,7 +14,9 @@ import {
   HiOutlineMinus,
   HiOutlinePlus,
   HiStar,
-  HiCheck
+  HiCheck,
+  HiOutlineTruck,
+  HiOutlineShieldCheck
 } from 'react-icons/hi';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -24,7 +25,6 @@ import ProductCard from '@/components/ProductCard';
 
 export default function ProductPage({ params }) {
   const { id } = use(params);
-  const router = useRouter();
   const { isLoading, getProductById, getProductsByCategory } = useProducts();
   
   const [product, setProduct] = useState(null);
@@ -69,10 +69,10 @@ export default function ProductPage({ params }) {
 
   if (isLoading || !product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Yükleniyor...</p>
+          <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500 font-medium">Yükleniyor...</p>
         </div>
       </div>
     );
@@ -81,9 +81,9 @@ export default function ProductPage({ params }) {
   const isWishlisted = isInWishlist(product.id);
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen bg-gray-50 pb-24">
       {/* Image Gallery */}
-      <div className="relative bg-gradient-to-b from-gray-900 to-black">
+      <div className="bg-white">
         <Swiper
           modules={[Pagination]}
           pagination={{ clickable: true }}
@@ -91,16 +91,14 @@ export default function ProductPage({ params }) {
         >
           {product.images?.map((image, index) => (
             <SwiperSlide key={index}>
-              <div className="relative w-full h-full p-4">
-                <div className="relative w-full h-full rounded-3xl overflow-hidden">
-                  <Image
-                    src={image}
-                    alt={`${product.name} - ${index + 1}`}
-                    fill
-                    className="object-cover"
-                    priority={index === 0}
-                  />
-                </div>
+              <div className="relative w-full h-full bg-gray-100 p-8">
+                <Image
+                  src={image}
+                  alt={`${product.name} - ${index + 1}`}
+                  fill
+                  className="object-contain"
+                  priority={index === 0}
+                />
               </div>
             </SwiperSlide>
           ))}
@@ -111,126 +109,141 @@ export default function ProductPage({ params }) {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => toggleWishlist(product)}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-sm"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-md"
           >
             {isWishlisted ? (
               <HiHeart className="w-5 h-5 text-red-500" />
             ) : (
-              <HiOutlineHeart className="w-5 h-5 text-white" />
+              <HiOutlineHeart className="w-5 h-5 text-gray-600" />
             )}
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.9 }}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-sm"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-md"
           >
-            <HiOutlineShare className="w-5 h-5 text-white" />
+            <HiOutlineShare className="w-5 h-5 text-gray-600" />
           </motion.button>
         </div>
 
         {/* Discount Badge */}
         {product.discount && (
-          <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-red-500 rounded-full text-sm font-bold">
+          <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-red-500 text-white text-sm font-bold rounded-full">
             -{product.discount}%
           </div>
         )}
       </div>
 
       {/* Product Info */}
-      <div className="px-4 py-6 space-y-6">
+      <div className="bg-white mt-2 px-4 py-6">
         {/* Title & Rating */}
-        <div>
-          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <HiStar className="w-5 h-5 text-yellow-400" />
-              <span className="font-semibold">{product.rating || 0}</span>
-              <span className="text-gray-400">({product.reviews || 0} değerlendirme)</span>
-            </div>
-            <span className={`text-sm ${product.stock > 10 ? 'text-green-400' : product.stock > 0 ? 'text-yellow-400' : 'text-red-400'}`}>
-              {product.stock > 10 ? 'Stokta' : product.stock > 0 ? `Son ${product.stock} ürün` : 'Tükendi'}
-            </span>
+        <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
+        <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-1">
+            <HiStar className="w-5 h-5 text-yellow-400" />
+            <span className="font-semibold text-gray-900">{product.rating || 0}</span>
+            <span className="text-gray-500">({product.reviews || 0} değerlendirme)</span>
           </div>
+          <span className={`text-sm font-medium ${product.stock > 10 ? 'text-green-600' : product.stock > 0 ? 'text-orange-500' : 'text-red-500'}`}>
+            {product.stock > 10 ? 'Stokta' : product.stock > 0 ? `Son ${product.stock} ürün` : 'Tükendi'}
+          </span>
         </div>
 
         {/* Price */}
-        <div className="flex items-center gap-3">
-          <span className="text-3xl font-bold">{formatPrice(product.price)}</span>
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-3xl font-bold text-gray-900">{formatPrice(product.price)}</span>
           {product.originalPrice && (
-            <span className="text-lg text-gray-500 line-through">
+            <span className="text-lg text-gray-400 line-through">
               {formatPrice(product.originalPrice)}
+            </span>
+          )}
+          {product.discount && (
+            <span className="px-2 py-1 bg-red-100 text-red-600 text-sm font-semibold rounded">
+              %{product.discount} İndirim
             </span>
           )}
         </div>
 
-        {/* Description */}
-        <div>
-          <h3 className="font-semibold mb-2">Ürün Açıklaması</h3>
-          <p className="text-gray-400 leading-relaxed">{product.description}</p>
-        </div>
-
-        {/* Specs */}
-        {product.specs && Object.keys(product.specs).length > 0 && (
-          <div>
-            <h3 className="font-semibold mb-3">Özellikler</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {Object.entries(product.specs).map(([key, value]) => (
-                <div key={key} className="p-3 rounded-xl bg-white/5 border border-white/10">
-                  <p className="text-xs text-gray-400 mb-1">{key}</p>
-                  <p className="font-medium text-sm">{value}</p>
-                </div>
-              ))}
-            </div>
+        {/* Features */}
+        <div className="flex gap-4 mb-6">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <HiOutlineTruck className="w-5 h-5 text-green-600" />
+            <span>Ücretsiz Kargo</span>
           </div>
-        )}
-
-        {/* Quantity Selector */}
-        <div>
-          <h3 className="font-semibold mb-3">Adet</h3>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center bg-white/5 border border-white/10 rounded-xl">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-12 h-12 flex items-center justify-center hover:bg-white/10 transition-colors rounded-l-xl"
-              >
-                <HiOutlineMinus className="w-5 h-5" />
-              </button>
-              <span className="w-12 text-center font-semibold">{quantity}</span>
-              <button
-                onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}
-                className="w-12 h-12 flex items-center justify-center hover:bg-white/10 transition-colors rounded-r-xl"
-              >
-                <HiOutlinePlus className="w-5 h-5" />
-              </button>
-            </div>
-            <span className="text-gray-400 text-sm">
-              Toplam: {formatPrice(product.price * quantity)}
-            </span>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <HiOutlineShieldCheck className="w-5 h-5 text-blue-600" />
+            <span>2 Yıl Garanti</span>
           </div>
         </div>
-
-        {/* Related Products */}
-        {relatedProducts.length > 0 && (
-          <div className="pt-6">
-            <h3 className="font-semibold mb-4">Benzer Ürünler</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {relatedProducts.map((relProduct, index) => (
-                <ProductCard key={relProduct.id} product={relProduct} index={index} />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
+      {/* Description */}
+      <div className="bg-white mt-2 px-4 py-6">
+        <h3 className="font-semibold text-gray-900 mb-3">Ürün Açıklaması</h3>
+        <p className="text-gray-600 leading-relaxed">{product.description}</p>
+      </div>
+
+      {/* Specs */}
+      {product.specs && Object.keys(product.specs).length > 0 && (
+        <div className="bg-white mt-2 px-4 py-6">
+          <h3 className="font-semibold text-gray-900 mb-4">Özellikler</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {Object.entries(product.specs).map(([key, value]) => (
+              <div key={key} className="p-3 bg-gray-50 rounded-xl">
+                <p className="text-xs text-gray-500 mb-1">{key}</p>
+                <p className="font-medium text-sm text-gray-900">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Quantity Selector */}
+      <div className="bg-white mt-2 px-4 py-6">
+        <h3 className="font-semibold text-gray-900 mb-3">Adet</h3>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center bg-gray-100 rounded-xl">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="w-12 h-12 flex items-center justify-center hover:bg-gray-200 transition-colors rounded-l-xl"
+            >
+              <HiOutlineMinus className="w-5 h-5 text-gray-600" />
+            </button>
+            <span className="w-12 text-center font-semibold text-gray-900">{quantity}</span>
+            <button
+              onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}
+              className="w-12 h-12 flex items-center justify-center hover:bg-gray-200 transition-colors rounded-r-xl"
+            >
+              <HiOutlinePlus className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+          <span className="text-gray-500 text-sm">
+            Toplam: <span className="font-bold text-gray-900">{formatPrice(product.price * quantity)}</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Related Products */}
+      {relatedProducts.length > 0 && (
+        <div className="bg-white mt-2 px-4 py-6">
+          <h3 className="font-semibold text-gray-900 mb-4">Benzer Ürünler</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {relatedProducts.map((relProduct, index) => (
+              <ProductCard key={relProduct.id} product={relProduct} index={index} />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Fixed Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 glass border-t border-white/10 p-4 safe-area-bottom">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100 p-4 shadow-lg">
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={handleAddToCart}
           disabled={product.stock === 0}
-          className={`w-full h-14 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 transition-colors ${
+          className={`w-full h-14 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-colors ${
             product.stock === 0 
-              ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-              : 'bg-white text-black hover:bg-gray-100'
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-red-500 text-white hover:bg-red-600'
           }`}
         >
           <AnimatePresence mode="wait">
@@ -242,7 +255,7 @@ export default function ProductPage({ params }) {
                 exit={{ opacity: 0, scale: 0.5 }}
                 className="flex items-center gap-2"
               >
-                <HiCheck className="w-6 h-6 text-green-600" />
+                <HiCheck className="w-6 h-6" />
                 Sepete Eklendi!
               </motion.span>
             ) : (

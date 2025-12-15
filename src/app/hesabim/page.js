@@ -38,17 +38,17 @@ export default function AccountPage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Yükleniyor...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-pulse text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen bg-gray-50 pb-8">
       {/* Header */}
-      <div className="px-4 py-8 text-center border-b border-white/10">
-        <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden bg-white/10">
+      <div className="bg-white px-4 py-8 text-center border-b border-gray-100">
+        <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden bg-gray-100 shadow-sm">
           {user.photoURL ? (
             <Image
               src={user.photoURL}
@@ -58,13 +58,13 @@ export default function AccountPage() {
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-3xl">
+            <div className="w-full h-full flex items-center justify-center text-3xl text-gray-400">
               {user.displayName?.[0] || user.email?.[0] || '?'}
             </div>
           )}
         </div>
-        <h1 className="text-xl font-bold">{user.displayName || 'Kullanıcı'}</h1>
-        <p className="text-sm text-gray-400">{user.email}</p>
+        <h1 className="text-xl font-bold text-gray-900">{user.displayName || 'Kullanıcı'}</h1>
+        <p className="text-sm text-gray-500">{user.email}</p>
       </div>
 
       {/* Menu */}
@@ -77,11 +77,11 @@ export default function AccountPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
               onClick={() => router.push(item.href)}
-              className="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors"
+              className="w-full flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
             >
               <div className="flex items-center gap-3">
-                <item.icon className="w-5 h-5 text-gray-400" />
-                <span>{item.label}</span>
+                <item.icon className="w-5 h-5 text-gray-500" />
+                <span className="text-gray-900">{item.label}</span>
               </div>
               <HiOutlineChevronRight className="w-5 h-5 text-gray-400" />
             </motion.button>
@@ -93,7 +93,7 @@ export default function AccountPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 p-4 mt-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 hover:bg-red-500/20 transition-colors"
+          className="w-full flex items-center gap-3 p-4 mt-4 bg-red-50 border border-red-100 rounded-xl text-red-600 hover:bg-red-100 transition-colors"
         >
           <HiOutlineLogout className="w-5 h-5" />
           <span>Çıkış Yap</span>
@@ -102,4 +102,3 @@ export default function AccountPage() {
     </div>
   );
 }
-

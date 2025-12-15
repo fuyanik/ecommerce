@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { HiOutlineSearch } from 'react-icons/hi';
 import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
@@ -10,39 +11,36 @@ import { useProducts } from '@/context/ProductsContext';
 function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
+  
   const { isLoading, searchProducts } = useProducts();
-  const [results, setResults] = useState([]);
-
-  useEffect(() => {
-    if (query && !isLoading) {
-      const searchResults = searchProducts(query);
-      setResults(searchResults);
-    }
-  }, [query, isLoading, searchProducts]);
+  const results = searchProducts(query);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Aranıyor...</p>
+          <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500 font-medium">Aranıyor...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <div className="px-4 py-6 border-b border-white/10">
-        <h1 className="text-2xl font-bold mb-2">Arama Sonuçları</h1>
-        <p className="text-gray-400">
-          &quot;{query}&quot; için {results.length} sonuç bulundu
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Search Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <HiOutlineSearch className="w-6 h-6 text-gray-400" />
+            <h1 className="text-xl font-bold text-gray-900">
+              &quot;{query}&quot; için sonuçlar
+            </h1>
+          </div>
+          <p className="text-gray-500">{results.length} ürün bulundu</p>
+        </div>
 
-      {/* Results */}
-      <div className="px-4 py-6">
+        {/* Results */}
         {results.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {results.map((product, index) => (
@@ -50,13 +48,31 @@ function SearchContent() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-              <HiOutlineSearch className="w-8 h-8 text-gray-500" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-16"
+          >
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+              <HiOutlineSearch className="w-10 h-10 text-gray-400" />
             </div>
-            <p className="text-gray-400 mb-2">Aramanızla eşleşen ürün bulunamadı.</p>
-            <p className="text-sm text-gray-500">Farklı anahtar kelimeler deneyin.</p>
-          </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Sonuç Bulunamadı</h2>
+            <p className="text-gray-500 mb-6">
+              &quot;{query}&quot; ile eşleşen ürün bulamadık.<br />
+              Farklı anahtar kelimeler deneyebilirsiniz.
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {['Koltuk', 'Yatak', 'Buzdolabı', 'Masa', 'Sandalye'].map((suggestion) => (
+                <a
+                  key={suggestion}
+                  href={`/ara?q=${suggestion}`}
+                  className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                  {suggestion}
+                </a>
+              ))}
+            </div>
+          </motion.div>
         )}
       </div>
 
@@ -68,8 +84,11 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Yükleniyor...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500 font-medium">Yükleniyor...</p>
+        </div>
       </div>
     }>
       <SearchContent />

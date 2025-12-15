@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from "../assets/bottomNavbarLogo2.png"
+import logo from "../assets/bottomNavbarLogo2.png";
 import { 
   HiOutlineShoppingCart, 
   HiShoppingCart,
@@ -23,7 +23,7 @@ const navItems = [
   { 
     id: 'home',
     href: '/', 
-    label: 'Home', 
+    label: 'Ana Sayfa', 
     icon: HiOutlineHome,
     activeIcon: HiHome
   },
@@ -103,14 +103,14 @@ export default function BottomNavbar() {
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
           className="relative"
         >
-          <Icon className={`w-6 h-6 transition-colors ${isActive ? 'text-white' : 'text-gray-400'}`} />
+          <Icon className={`w-6 h-6 transition-colors ${isActive ? 'text-red-500' : 'text-gray-400'}`} />
           
           {/* Badge for cart */}
           {item.id === 'cart' && cartCount > 0 && (
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="badge"
+              className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
             >
               {cartCount > 99 ? '99+' : cartCount}
             </motion.span>
@@ -121,7 +121,7 @@ export default function BottomNavbar() {
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="badge"
+              className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
             >
               {wishlistCount > 99 ? '99+' : wishlistCount}
             </motion.span>
@@ -134,7 +134,7 @@ export default function BottomNavbar() {
             opacity: isActive ? 1 : 0.6,
             scale: isActive ? 1.05 : 1
           }}
-          className={`text-xs font-medium transition-colors ${isActive ? 'text-white' : 'text-gray-400'}`}
+          className={`text-[10px] font-medium transition-colors ${isActive ? 'text-red-500' : 'text-gray-400'}`}
         >
           {item.label}
         </motion.span>
@@ -147,7 +147,7 @@ export default function BottomNavbar() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="absolute -bottom-1 w-1 h-1 rounded-full bg-white"
+              className="absolute -bottom-1 w-1 h-1 rounded-full bg-red-500"
             />
           )}
         </AnimatePresence>
@@ -156,31 +156,33 @@ export default function BottomNavbar() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/10 safe-area-bottom">
-      <div className="h-20 max-w-lg mx-auto px-4 flex items-center">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-gray-100 shadow-lg">
+      <div className="h-20 max-w-lg mx-auto px-2 flex items-center">
         {/* Left side - 2 items */}
         <div className="flex-1 flex items-center justify-around">
           {leftItems.map(renderNavItem)}
         </div>
 
         {/* Center - Logo */}
-        <div className="flex items-center justify-center px-4">
+        <div className="flex items-center justify-center px-2">
           <Link 
             href="/"
-            className="relative -mt-2"
+            className="relative -mt-4"
             onClick={() => setActiveTab('home')}
           >
             <motion.div
               whileTap={{ scale: 0.9 }}
-              className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-black/50 border-2 border-white/20"
+              className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-white p-0.5"
             >
-              <Image
-                src={logo}
-                alt="1001 Çarşı AVM"
-                width={64}
-                height={64}
-                className="object-cover"
-              />
+              <div className="w-full h-full rounded-xl overflow-hidden bg-white">
+                <Image
+                  src={logo}
+                  alt="Mobilya"
+                  width={64}
+                  height={64}
+                  className="object-cover w-full h-full"
+                />
+              </div>
             </motion.div>
           </Link>
         </div>
@@ -192,8 +194,7 @@ export default function BottomNavbar() {
       </div>
       
       {/* Safe area spacer */}
-      <div className="h-safe-area-bottom bg-transparent" />
+      <div className="h-safe-area-bottom bg-white" />
     </nav>
   );
 }
-

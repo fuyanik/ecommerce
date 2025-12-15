@@ -5,50 +5,97 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiOutlineSearch, HiOutlineUser, HiOutlineMenu, HiOutlineX, HiArrowLeft } from 'react-icons/hi';
+import { HiOutlineSearch, HiOutlineUser, HiOutlineMenu, HiOutlineX, HiArrowLeft, HiOutlineShoppingBag } from 'react-icons/hi';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 
-// Animated Logo Component with shimmer effect
-function AnimatedLogo() {
+// Animated Logo Component with shine effect
+function Logo() {
   return (
-    <Link href="/" className="relative flex items-center overflow-hidden rounded-xl">
-      {/* Main Logo Container */}
-      <div className="relative flex items-center py-1 px-2">
-        {/* Logo Icon */}
-        <div className="relative w-8 h-8 mr-2 rounded-lg bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 p-[2px]">
-          <div className="w-full h-full rounded-[6px] bg-black flex items-center justify-center">
-            <span className="text-sm font-black bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-              10
+    <Link href="/" className="flex items-center gap-2 group">
+      <motion.div 
+        className="relative flex items-center"
+        whileHover={{ scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+      >
+        {/* Main Logo Text - Horizontal */}
+        <div className="relative overflow-hidden">
+          {/* Background glow effect */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
+            animate={{
+              x: ['-200%', '200%'],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              repeatDelay: 2,
+              ease: 'easeInOut',
+            }}
+          />
+          
+          <div className="flex items-center gap-1.5 relative">
+            {/* 1001 */}
+            <span className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tighter">
+              1001
             </span>
+            
+            {/* ÇARŞI with AVM */}
+            <div className="relative">
+              <span className="text-2xl sm:text-3xl font-black text-gray-900 tracking-wide">
+                ÇARŞI
+              </span>
+              
+              {/* AVM - positioned at bottom right diagonal */}
+              <motion.span 
+                className="absolute -bottom-1 -right-3 text-[8px] sm:text-[9px] font-bold text-white bg-gray-900 px-1.5 py-0.5 rounded tracking-widest italic"
+                style={{ transform: 'rotate(-5deg)' }}
+                animate={{
+                  boxShadow: [
+                    '0 0 0px rgba(0,0,0,0.3)',
+                    '0 0 8px rgba(0,0,0,0.5)',
+                    '0 0 0px rgba(0,0,0,0.3)',
+                  ],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                AVM
+              </motion.span>
+            </div>
           </div>
         </div>
         
-        {/* Logo Text */}
-        <div className="flex flex-col leading-none">
-          <span className="text-[13px] font-black tracking-tight bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-            1001 ÇARŞI
-          </span>
-          <span className="text-[9px] font-bold tracking-[0.2em] text-gray-400 mt-px">
-            AVM
-          </span>
-        </div>
-        
-        {/* Shimmer Effect - Periodic shine across the entire logo */}
+        {/* Sparkle effects */}
         <motion.div
-          className="absolute inset-0 -skew-x-12"
-          initial={{ x: '-100%' }}
-          animate={{ x: '200%' }}
+          className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full"
+          animate={{
+            scale: [0, 1, 0],
+            opacity: [0, 1, 0],
+          }}
           transition={{
             duration: 1.5,
             repeat: Infinity,
-            repeatDelay: 4,
-            ease: "easeInOut"
+            repeatDelay: 3,
           }}
-        >
-          <div className="w-8 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-        </motion.div>
-      </div>
+        />
+        <motion.div
+          className="absolute top-2 -right-2 w-1.5 h-1.5 bg-yellow-300 rounded-full"
+          animate={{
+            scale: [0, 1, 0],
+            opacity: [0, 1, 0],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            repeatDelay: 3,
+            delay: 0.3,
+          }}
+        />
+      </motion.div>
     </Link>
   );
 }
@@ -90,18 +137,25 @@ export default function Navbar() {
   // Product page navbar with back button
   if (isProductPage || isCheckoutPage) {
     return (
-      <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
-        <div className="h-14 flex items-center justify-between px-4">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
+        <div className="h-[60px] flex items-center justify-between px-4">
           <button 
             onClick={() => router.back()}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
           >
-            <HiArrowLeft className="w-6 h-6" />
+            <HiArrowLeft className="w-6 h-6 text-gray-700" />
           </button>
-          <span className="font-semibold text-lg">
+          <span className="font-semibold text-lg text-gray-900">
             {isCheckoutPage ? 'Ödeme' : 'Detaylar'}
           </span>
-          <div className="w-10" />
+          <Link href="/sepet" className="relative w-10 h-10 flex items-center justify-center">
+            <HiOutlineShoppingBag className="w-6 h-6 text-gray-700" />
+            {getCartCount() > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {getCartCount()}
+              </span>
+            )}
+          </Link>
         </div>
       </nav>
     );
@@ -111,44 +165,57 @@ export default function Navbar() {
     <>
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'glass border-b border-white/10' : 'bg-black/50 backdrop-blur-sm'
+          isScrolled ? 'bg-white shadow-sm border-b border-gray-100' : 'bg-white/80 backdrop-blur-md'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <div className="h-14 flex items-center justify-between">
+          <div className="h-[60px] flex items-center justify-between">
             {/* Logo */}
-            <AnimatedLogo />
+            <Logo />
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-6">
-              <Link href="/kategori/teknoloji" className="text-sm text-gray-300 hover:text-white transition-colors">
-                Teknoloji
+            <div className="hidden md:flex items-center gap-8">
+              <Link href="/kategori/koltuk-takimi" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                Koltuk Takımları
               </Link>
-              <Link href="/kategori/ev-esyalari" className="text-sm text-gray-300 hover:text-white transition-colors">
-                Ev Eşyaları
+              <Link href="/kategori/yatak-odasi" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                Yatak Odası
               </Link>
-              <Link href="/kategori/mobilya" className="text-sm text-gray-300 hover:text-white transition-colors">
-                Mobilya
+              <Link href="/kategori/mutfak" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                Mutfak
               </Link>
-              <Link href="/kategori/bebek-urunleri" className="text-sm text-gray-300 hover:text-white transition-colors">
-                Bebek
+              <Link href="/kategori/beyaz-esya" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                Beyaz Eşya
               </Link>
             </div>
 
             {/* Right Icons */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               {/* Search Button */}
               <button 
                 onClick={() => setIsSearchOpen(true)}
-                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
               >
-                <HiOutlineSearch className="w-5 h-5" />
+                <HiOutlineSearch className="w-5 h-5 text-gray-700" />
               </button>
+
+              {/* Cart */}
+              <Link 
+                href="/sepet"
+                className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <HiOutlineShoppingBag className="w-5 h-5 text-gray-700" />
+                {getCartCount() > 0 && (
+                  <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                    {getCartCount()}
+                  </span>
+                )}
+              </Link>
 
               {/* User */}
               <Link 
                 href={user ? '/hesabim' : '/giris'}
-                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
               >
                 {user?.photoURL ? (
                   <Image
@@ -159,16 +226,16 @@ export default function Navbar() {
                     className="rounded-full"
                   />
                 ) : (
-                  <HiOutlineUser className="w-5 h-5" />
+                  <HiOutlineUser className="w-5 h-5 text-gray-700" />
                 )}
               </Link>
 
               {/* Mobile Menu */}
               <button 
                 onClick={() => setIsMenuOpen(true)}
-                className="md:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+                className="md:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
               >
-                <HiOutlineMenu className="w-5 h-5" />
+                <HiOutlineMenu className="w-5 h-5 text-gray-700" />
               </button>
             </div>
           </div>
@@ -182,9 +249,9 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl"
+            className="fixed inset-0 z-60 bg-white"
           >
-            <div className="max-w-2xl mx-auto px-4 pt-20">
+            <div className="max-w-2xl mx-auto px-4 pt-6">
               <div className="flex items-center gap-4 mb-8">
                 <form onSubmit={handleSearch} className="flex-1">
                   <div className="relative">
@@ -193,25 +260,25 @@ export default function Navbar() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Ürün ara..."
+                      placeholder="Mobilya, beyaz eşya ara..."
                       autoFocus
-                      className="w-full h-14 pl-12 pr-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 outline-none focus:border-white/40 transition-colors"
+                      className="w-full h-14 pl-12 pr-4 bg-gray-100 border-0 rounded-2xl text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
                     />
                   </div>
                 </form>
                 <button 
                   onClick={() => setIsSearchOpen(false)}
-                  className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                 >
-                  <HiOutlineX className="w-6 h-6" />
+                  <HiOutlineX className="w-6 h-6 text-gray-700" />
                 </button>
               </div>
               
               {/* Quick Links */}
               <div className="space-y-4">
-                <h3 className="text-sm text-gray-400 uppercase tracking-wider">Popüler Aramalar</h3>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Popüler Aramalar</h3>
                 <div className="flex flex-wrap gap-2">
-                  {['iPhone', 'Laptop', 'Koltuk', 'Bebek Arabası', 'Buzdolabı'].map((term) => (
+                  {['Köşe Koltuk', 'Yatak', 'Buzdolabı', 'Çamaşır Makinesi', 'TV Ünitesi', 'Masa Sandalye'].map((term) => (
                     <button
                       key={term}
                       onClick={() => {
@@ -219,7 +286,7 @@ export default function Navbar() {
                         router.push(`/ara?q=${encodeURIComponent(term)}`);
                         setIsSearchOpen(false);
                       }}
-                      className="px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20 transition-colors"
+                      className="px-4 py-2 bg-gray-100 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
                     >
                       {term}
                     </button>
@@ -239,27 +306,28 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: 'tween', duration: 0.3 }}
-            className="fixed inset-0 z-[60] bg-black"
+            className="fixed inset-0 z-60 bg-white"
           >
-            <div className="h-14 flex items-center justify-between px-4 border-b border-white/10">
-              <span className="font-semibold">Menü</span>
+            <div className="h-[60px] flex items-center justify-between px-4 border-b border-gray-100">
+              <span className="font-semibold text-gray-900">Menü</span>
               <button 
                 onClick={() => setIsMenuOpen(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
               >
-                <HiOutlineX className="w-6 h-6" />
+                <HiOutlineX className="w-6 h-6 text-gray-700" />
               </button>
             </div>
             
-            <div className="p-4 space-y-2">
+            <div className="p-4 space-y-1">
               {[
                 { name: 'Ana Sayfa', href: '/' },
-                { name: 'Teknoloji', href: '/kategori/teknoloji' },
-                { name: 'Ev Eşyaları', href: '/kategori/ev-esyalari' },
-                { name: 'Bebek Ürünleri', href: '/kategori/bebek-urunleri' },
-                { name: 'Mobilya', href: '/kategori/mobilya' },
+                { name: 'Koltuk Takımları', href: '/kategori/koltuk-takimi' },
+                { name: 'Yatak Odası', href: '/kategori/yatak-odasi' },
+                { name: 'Yemek Odası', href: '/kategori/yemek-odasi' },
+                { name: 'Mutfak', href: '/kategori/mutfak' },
                 { name: 'Beyaz Eşya', href: '/kategori/beyaz-esya' },
                 { name: 'Küçük Ev Aletleri', href: '/kategori/kucuk-ev-aletleri' },
+                { name: 'Dekorasyon', href: '/kategori/dekorasyon' },
               ].map((item, index) => (
                 <motion.div
                   key={item.name}
@@ -270,7 +338,7 @@ export default function Navbar() {
                   <Link
                     href={item.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className="block py-4 px-4 rounded-xl hover:bg-white/10 transition-colors text-lg"
+                    className="flex items-center py-4 px-4 rounded-xl hover:bg-gray-50 transition-colors text-gray-800 font-medium"
                   >
                     {item.name}
                   </Link>
@@ -283,4 +351,3 @@ export default function Navbar() {
     </>
   );
 }
-
