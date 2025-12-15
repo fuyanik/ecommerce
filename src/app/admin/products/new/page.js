@@ -132,7 +132,7 @@ export default function NewProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 w-screen overflow-x-hidden">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -145,19 +145,19 @@ export default function NewProductPage() {
         </div>
       </header>
 
-      <main className="pt-16 pb-8 px-4">
-        <div className="max-w-2xl mx-auto">
+      <main className="pt-16 pb-8 px-3 sm:px-4">
+        <div className="max-w-2xl mx-auto w-full">
           {error && (
-            <div className="my-4 p-4 rounded-xl bg-red-50 border border-red-100 text-red-600">
+            <div className="my-4 p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6 py-6">
             {/* Images */}
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm">
               <label className="text-sm font-medium text-gray-700 mb-3 block">Ürün Görselleri</label>
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
                 {images.map((img, index) => (
                   <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200">
                     <Image src={img} alt="" fill className="object-cover" />
@@ -185,7 +185,7 @@ export default function NewProductPage() {
             </div>
 
             {/* Basic Info */}
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+            <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">Ürün Adı *</label>
                 <input
@@ -270,7 +270,7 @@ export default function NewProductPage() {
             </div>
 
             {/* Specs */}
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               <div className="flex items-center justify-between mb-3">
                 <label className="text-sm font-medium text-gray-700">Özellikler</label>
                 <button
@@ -281,30 +281,33 @@ export default function NewProductPage() {
                   + Ekle
                 </button>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {specs.map((spec, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={spec.key}
-                      onChange={(e) => handleSpecChange(index, 'key', e.target.value)}
-                      placeholder="Özellik"
-                      className="flex-1 h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-red-500"
-                    />
-                    <input
-                      type="text"
-                      value={spec.value}
-                      onChange={(e) => handleSpecChange(index, 'value', e.target.value)}
-                      placeholder="Değer"
-                      className="flex-1 h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-red-500"
-                    />
+                  <div key={index} className="flex flex-col sm:flex-row gap-2 p-3 bg-gray-50 rounded-xl">
+                    <div className="flex gap-2 flex-1">
+                      <input
+                        type="text"
+                        value={spec.key}
+                        onChange={(e) => handleSpecChange(index, 'key', e.target.value)}
+                        placeholder="Özellik"
+                        className="flex-1 min-w-0 h-10 sm:h-12 px-3 sm:px-4 bg-white border border-gray-200 rounded-lg text-gray-900 text-sm outline-none focus:border-red-500"
+                      />
+                      <input
+                        type="text"
+                        value={spec.value}
+                        onChange={(e) => handleSpecChange(index, 'value', e.target.value)}
+                        placeholder="Değer"
+                        className="flex-1 min-w-0 h-10 sm:h-12 px-3 sm:px-4 bg-white border border-gray-200 rounded-lg text-gray-900 text-sm outline-none focus:border-red-500"
+                      />
+                    </div>
                     {specs.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeSpec(index)}
-                        className="w-12 h-12 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-xl"
+                        className="h-10 sm:h-12 px-3 flex items-center justify-center text-red-500 hover:bg-red-100 rounded-lg text-sm font-medium sm:w-auto"
                       >
                         <HiOutlineX className="w-5 h-5" />
+                        <span className="ml-1 sm:hidden">Kaldır</span>
                       </button>
                     )}
                   </div>

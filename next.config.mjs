@@ -10,7 +10,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'via.placeholder.com',
+        hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
       },
@@ -23,6 +23,18 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.firebasestorage.app',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'carsi-18a12.firebasestorage.app',
         port: '',
         pathname: '/**',
       },

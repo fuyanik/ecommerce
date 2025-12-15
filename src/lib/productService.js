@@ -132,11 +132,27 @@ export const addProduct = async (productData, imageFiles = []) => {
   try {
     // Görselleri yükle
     const imageUrls = [];
-    for (const file of imageFiles) {
-      const fileRef = ref(storage, `products/${Date.now()}_${file.name}`);
-      await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(fileRef);
-      imageUrls.push(url);
+    
+    if (imageFiles.length > 0) {
+      console.log('Uploading', imageFiles.length, 'images for new product...');
+      
+      for (const file of imageFiles) {
+        try {
+          const fileName = `products/${Date.now()}_${Math.random().toString(36).substring(7)}_${file.name}`;
+          const fileRef = ref(storage, fileName);
+          
+          console.log('Uploading file:', file.name);
+          const snapshot = await uploadBytes(fileRef, file);
+          console.log('Upload complete:', snapshot.metadata.fullPath);
+          
+          const url = await getDownloadURL(fileRef);
+          console.log('Download URL:', url);
+          imageUrls.push(url);
+        } catch (uploadErr) {
+          console.error('Image upload error:', uploadErr);
+          throw new Error(`Görsel yüklenemedi: ${file.name} - ${uploadErr.message}`);
+        }
+      }
     }
 
     // İndirim hesapla
@@ -167,7 +183,7 @@ export const addProduct = async (productData, imageFiles = []) => {
       category: productData.category,
       stock: parseInt(productData.stock),
       featured: productData.featured || false,
-      images: imageUrls.length > 0 ? imageUrls : (productData.images || ['https://via.placeholder.com/400']),
+      images: imageUrls.length > 0 ? imageUrls : (productData.images || ['https://picsum.photos/400']),
       specs: specsObj,
       rating: productData.rating || 0,
       reviews: productData.reviews || 0,
@@ -229,7 +245,7 @@ export const updateProduct = async (id, productData, newImageFiles = []) => {
       category: productData.category,
       stock: parseInt(productData.stock),
       featured: productData.featured || false,
-      images: allImages.length > 0 ? allImages : ['https://via.placeholder.com/400'],
+      images: allImages.length > 0 ? allImages : ['https://picsum.photos/400'],
       specs: specsObj,
       updatedAt: serverTimestamp()
     };
