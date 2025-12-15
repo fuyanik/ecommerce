@@ -66,6 +66,14 @@ export function CartProvider({ children }) {
     return cart.reduce((count, item) => count + item.quantity, 0);
   };
 
+  const isInCart = (productId) => {
+    return cart.some(item => item.id === productId);
+  };
+
+  const getCartItem = (productId) => {
+    return cart.find(item => item.id === productId);
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -76,6 +84,8 @@ export function CartProvider({ children }) {
         clearCart,
         getCartTotal,
         getCartCount,
+        isInCart,
+        getCartItem,
         isLoaded
       }}
     >

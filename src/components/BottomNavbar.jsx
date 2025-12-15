@@ -56,13 +56,13 @@ const navItems = [
   },
 ];
 
-export default function BottomNavbar() {
+export default function BottomNavbar({ force = false }) {
   const pathname = usePathname();
   const { getCartCount, isLoaded: cartLoaded } = useCart();
   const { getWishlistCount, isLoaded: wishlistLoaded } = useWishlist();
   const [activeTab, setActiveTab] = useState('home');
 
-  // Hide on admin, checkout, product, and cart pages
+  // Hide on admin, checkout, product, and cart pages (unless forced)
   const isAdminPage = pathname.startsWith('/admin');
   const isCheckoutPage = pathname.startsWith('/checkout');
   const isProductPage = pathname.startsWith('/urun/');
@@ -75,7 +75,8 @@ export default function BottomNavbar() {
     else if (pathname === '/destek') setActiveTab('chat');
   }, [pathname]);
 
-  if (isAdminPage || isCheckoutPage || isProductPage || isCartPage) return null;
+  // If force is true, show the navbar regardless of page
+  if (!force && (isAdminPage || isCheckoutPage || isProductPage || isCartPage)) return null;
 
   const cartCount = cartLoaded ? getCartCount() : 0;
   const wishlistCount = wishlistLoaded ? getWishlistCount() : 0;

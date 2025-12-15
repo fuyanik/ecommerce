@@ -57,8 +57,8 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (cart.length === 0 && !orderComplete) {
-      router.push('/sepet');
-    }
+    router.push('/sepet');
+  }
   }, [cart, orderComplete, router]);
 
   const formatPrice = (price) => {
@@ -182,17 +182,30 @@ export default function CheckoutPage() {
         <p className="text-gray-500 mb-8">
           Siparişinizle ilgili bilgiler e-posta adresinize gönderilecektir.
         </p>
-        <button
+        <motion.button
+          whileTap={{ scale: 0.98 }}
           onClick={() => router.push('/')}
-          className="px-8 py-3 bg-red-500 text-white font-semibold rounded-xl hover:bg-red-600 transition-colors"
+          className="relative px-8 py-3 bg-gradient-to-r from-gray-900 via-slate-800 to-indigo-900 text-white font-semibold rounded-xl shadow-xl overflow-hidden"
         >
-          Alışverişe Devam Et
-        </button>
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+            animate={{
+              x: ['-200%', '200%'],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatDelay: 1.5,
+              ease: 'easeInOut',
+            }}
+          />
+          <span className="relative z-10">Alışverişe Devam Et</span>
+        </motion.button>
       </div>
     );
   }
 
-  const inputClass = "w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/10";
+  const inputClass = "w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-slate-800 focus:ring-2 focus:ring-indigo-900/20 transition-all";
 
   return (
     <div className="min-h-screen bg-gray-50 pb-32">
@@ -204,7 +217,7 @@ export default function CheckoutPage() {
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
                   index <= currentStep 
-                    ? 'bg-red-500 text-white' 
+                    ? 'bg-gradient-to-r from-gray-900 to-indigo-900 text-white' 
                     : 'bg-gray-200 text-gray-400'
                 }`}>
                   {index < currentStep ? <HiCheck className="w-5 h-5" /> : index + 1}
@@ -215,7 +228,7 @@ export default function CheckoutPage() {
               </div>
               {index < steps.length - 1 && (
                 <div className={`w-16 h-0.5 mx-2 ${
-                  index < currentStep ? 'bg-red-500' : 'bg-gray-200'
+                  index < currentStep ? 'bg-gradient-to-r from-gray-900 to-indigo-900' : 'bg-gray-200'
                 }`} />
               )}
             </div>
@@ -504,25 +517,45 @@ export default function CheckoutPage() {
               (currentStep === 2 && !isStep3Valid) ||
               isProcessing
             }
-            className={`flex-1 h-14 font-semibold text-lg rounded-xl transition-all ${
+            className={`relative flex-1 h-14 font-semibold text-lg rounded-2xl transition-all overflow-hidden ${
               ((currentStep === 0 && !isStep1Valid) ||
                (currentStep === 1 && !isStep2Valid) ||
                (currentStep === 2 && !isStep3Valid) ||
                isProcessing)
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/30'
+                : 'bg-gradient-to-r from-gray-900 via-slate-800 to-indigo-900 text-white shadow-xl'
             }`}
           >
-            {isProcessing ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                İşleniyor...
-              </span>
-            ) : currentStep === 2 ? (
-              `Öde ${formatPrice(getCartTotal())}`
-            ) : (
-              'Devam Et'
+            {/* Shine effect */}
+            {!((currentStep === 0 && !isStep1Valid) ||
+               (currentStep === 1 && !isStep2Valid) ||
+               (currentStep === 2 && !isStep3Valid) ||
+               isProcessing) && (
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+                animate={{
+                  x: ['-200%', '200%'],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatDelay: 1.5,
+                  ease: 'easeInOut',
+                }}
+              />
             )}
+            <span className="relative z-10">
+              {isProcessing ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  İşleniyor...
+                </span>
+              ) : currentStep === 2 ? (
+                `Öde ${formatPrice(getCartTotal())}`
+              ) : (
+                'Devam Et'
+              )}
+            </span>
           </motion.button>
         </div>
       </div>

@@ -247,6 +247,8 @@ export const updateProduct = async (id, productData, newImageFiles = []) => {
       featured: productData.featured || false,
       images: allImages.length > 0 ? allImages : ['https://picsum.photos/400'],
       specs: specsObj,
+      rating: parseFloat(productData.rating) || 4.5,
+      reviews: parseInt(productData.reviewCount) || 0,
       updatedAt: serverTimestamp()
     };
 

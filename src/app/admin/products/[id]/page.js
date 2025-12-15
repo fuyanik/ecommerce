@@ -31,7 +31,9 @@ export default function EditProductPage({ params }) {
     originalPrice: '',
     category: '',
     stock: '',
-    featured: false
+    featured: false,
+    rating: '4.5',
+    reviewCount: ''
   });
   const [images, setImages] = useState([]);
   const [newImageFiles, setNewImageFiles] = useState([]);
@@ -66,7 +68,9 @@ export default function EditProductPage({ params }) {
           originalPrice: product.originalPrice?.toString() || '',
           category: product.category || '',
           stock: product.stock?.toString() || '',
-          featured: product.featured || false
+          featured: product.featured || false,
+          rating: product.rating?.toString() || '4.5',
+          reviewCount: product.reviews?.toString() || ''
         });
         setImages(product.images || []);
         
@@ -186,6 +190,7 @@ export default function EditProductPage({ params }) {
     } catch (err) {
       console.error('Submit error:', err);
       setError('Ürün güncellenirken hata oluştu: ' + err.message);
+    } finally {
       setIsSaving(false);
     }
   };
@@ -397,6 +402,43 @@ export default function EditProductPage({ params }) {
                     onChange={handleInputChange}
                     required
                     className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/10"
+                  />
+                </div>
+              </div>
+
+              {/* Rating & Reviews */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Ürün Puanı ⭐</label>
+                  <select
+                    name="rating"
+                    value={formData.rating}
+                    onChange={handleInputChange}
+                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/10 appearance-none"
+                  >
+                    <option value="4.0">4.0 ⭐</option>
+                    <option value="4.1">4.1 ⭐</option>
+                    <option value="4.2">4.2 ⭐</option>
+                    <option value="4.3">4.3 ⭐</option>
+                    <option value="4.4">4.4 ⭐</option>
+                    <option value="4.5">4.5 ⭐</option>
+                    <option value="4.6">4.6 ⭐</option>
+                    <option value="4.7">4.7 ⭐</option>
+                    <option value="4.8">4.8 ⭐</option>
+                    <option value="4.9">4.9 ⭐</option>
+                    <option value="5.0">5.0 ⭐</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Değerlendirme Sayısı</label>
+                  <input
+                    type="number"
+                    name="reviewCount"
+                    value={formData.reviewCount}
+                    onChange={handleInputChange}
+                    min="0"
+                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/10"
+                    placeholder="0"
                   />
                 </div>
               </div>

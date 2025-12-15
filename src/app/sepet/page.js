@@ -142,9 +142,22 @@ export default function CartPage() {
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={() => router.push('/checkout')}
-          className="w-full h-14 bg-red-500 text-white font-semibold text-lg rounded-xl hover:bg-red-600 transition-colors"
+          className="relative w-full h-14 bg-gradient-to-r from-gray-900 via-slate-800 to-indigo-900 text-white font-semibold text-lg rounded-2xl shadow-xl overflow-hidden"
         >
-          Ödemeye Geç
+          {/* Shine effect */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+            animate={{
+              x: ['-200%', '200%'],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatDelay: 1.5,
+              ease: 'easeInOut',
+            }}
+          />
+          <span className="relative z-10">Ödemeye Geç</span>
         </motion.button>
       </div>
     </div>
