@@ -372,3 +372,25 @@ body {
     text-align: center;
   }
 }
+
+/* Touch device optimizations - prevents double-tap issue */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Only apply hover effects on devices that support hover (non-touch) */
+@media (hover: none) {
+  .card-hover:hover {
+    transform: none;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .category-pill:hover {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+  }
+  
+  .buy-btn:hover {
+    background: var(--text-primary);
+  }
+}

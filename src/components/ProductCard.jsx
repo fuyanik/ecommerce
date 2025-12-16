@@ -50,15 +50,15 @@ export default function ProductCard({ product, index = 0 }) {
       transition={{ delay: index * 0.05 }}
       className="group relative"
     >
-      <Link href={`/urun/${product.id}`}>
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
+      <Link href={`/urun/${product.id}`} className="touch-manipulation">
+        <div className="bg-white rounded-2xl overflow-hidden shadow-sm md:hover:shadow-lg transition-all duration-300 border border-gray-100">
           {/* Image Container with Pastel Background */}
           <div className={`relative aspect-square ${bgColor} p-4`}>
             <Image
               src={product.images?.[0] || '/placeholder.png'}
               alt={product.name}
               fill
-              className="object-contain group-hover:scale-105 transition-transform duration-500 p-2"
+              className="object-contain md:group-hover:scale-105 transition-transform duration-500 p-2"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
             

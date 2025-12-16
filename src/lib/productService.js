@@ -319,6 +319,7 @@ export const addCategory = async (categoryData) => {
       icon: categoryData.icon,
       image: categoryData.image,
       description: categoryData.description,
+      order: categoryData.order ?? 999, // Sıralama için (düşük = önce)
       createdAt: serverTimestamp()
     };
 

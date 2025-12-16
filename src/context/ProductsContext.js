@@ -34,7 +34,13 @@ export function ProductsProvider({ children }) {
         getAllCategories()
       ]);
       setProducts(productsData);
-      setCategories(categoriesData);
+      // Kategorileri order alanına göre sırala (küçükten büyüğe)
+      const sortedCategories = categoriesData.sort((a, b) => {
+        const orderA = a.order ?? 999;
+        const orderB = b.order ?? 999;
+        return orderA - orderB;
+      });
+      setCategories(sortedCategories);
     } catch (err) {
       console.error('Error loading data:', err);
       setError(err.message);
