@@ -20,13 +20,19 @@ import {
   HiOutlineShieldCheck,
   HiOutlineShoppingBag,
   HiOutlineHome,
-  HiShoppingCart
+  HiShoppingCart,
+  HiOutlineChevronDown,
+  HiOutlineBadgeCheck,
+  HiOutlineRefresh,
+  HiOutlineClock
 } from 'react-icons/hi';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useProducts } from '@/context/ProductsContext';
 import ProductCard from '@/components/ProductCard';
 import BottomNavbar from '@/components/BottomNavbar';
+import CountdownBanner from '@/components/CountdownBanner';
+import SocialProof from '@/components/SocialProof';
 
 export default function ProductPage({ params }) {
   const { id } = use(params);
@@ -37,8 +43,28 @@ export default function ProductPage({ params }) {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [expandedFaq, setExpandedFaq] = useState(null);
+  const [timeUntilMidnight, setTimeUntilMidnight] = useState({ hours: 0, minutes: 0 });
   const { addToCart, isInCart, getCartItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+
+  // Calculate time until midnight
+  useEffect(() => {
+    const calculateTimeUntilMidnight = () => {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const diff = midnight - now;
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      setTimeUntilMidnight({ hours, minutes });
+    };
+
+    calculateTimeUntilMidnight();
+    const timer = setInterval(calculateTimeUntilMidnight, 60000); // Update every minute
+
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -206,6 +232,11 @@ export default function ProductPage({ params }) {
         )}
       </AnimatePresence>
 
+      {/* Countdown Banner */}
+      <div className="pt-[62px]">
+        <CountdownBanner />
+      </div>
+
       {/* Image Gallery */}
       <div className="bg-white relative">
         <Swiper
@@ -259,8 +290,15 @@ export default function ProductPage({ params }) {
 
       {/* Product Info */}
       <div className="bg-white mt-2 px-4 py-6">
-        {/* Title & Rating */}
+        {/* Title */}
         <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
+        
+        {/* Social Proof - Between title and rating */}
+        <div className="mb-3">
+          <SocialProof />
+        </div>
+        
+        {/* Rating */}
         <div className="flex items-center gap-4 mb-4">
           <div className="flex items-center gap-1">
             <HiStar className="w-5 h-5 text-yellow-400" />
@@ -273,7 +311,7 @@ export default function ProductPage({ params }) {
         </div>
 
         {/* Price */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-2">
           <span className="text-3xl font-bold text-gray-900">{formatPrice(product.price)}</span>
           {product.originalPrice && (
             <span className="text-lg text-gray-400 line-through">
@@ -285,6 +323,11 @@ export default function ProductPage({ params }) {
               %{product.discount} İndirim
             </span>
           )}
+        </div>
+        
+        {/* Lowest Price Badge */}
+        <div className="flex items-center gap-1.5 mb-6">
+          <span className="text-xs text-green-600 font-medium">✓ Son 14 Günün En Düşük Fiyatı!</span>
         </div>
 
         {/* In Cart Badge */}
@@ -343,6 +386,116 @@ export default function ProductPage({ params }) {
           </div>
         </div>
       )}
+
+      {/* Warranty & Guarantee Info */}
+      <div className="bg-white mt-2 px-4 py-6">
+        <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-100 rounded-xl">
+          <HiOutlineBadgeCheck className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-semibold text-blue-900 mb-1">Bu Ürün Garantilidir</h4>
+            <p className="text-sm text-blue-700">
+              Satın aldığınız tüm ürünler orijinal ve yetkili distribütör garantisi altındadır. 
+              Herhangi bir sorun yaşamanız durumunda 7/24 müşteri hizmetlerimizden destek alabilirsiniz.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="bg-white mt-2 px-4 py-6">
+        <h3 className="font-semibold text-gray-900 mb-4">Sıkça Sorulan Sorular</h3>
+        <div className="space-y-3">
+          {/* FAQ 1 */}
+          <div className="bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
+            <button
+              onClick={() => setExpandedFaq(expandedFaq === 0 ? null : 0)}
+              className="w-full p-4 flex items-center justify-between text-left"
+            >
+              <span className="font-medium text-sm text-gray-900 pr-4">
+                Satın aldığım ürünler orijinal ve garantili mi?
+              </span>
+              <HiOutlineChevronDown 
+                className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform ${
+                  expandedFaq === 0 ? 'rotate-180' : ''
+                }`} 
+              />
+            </button>
+            {expandedFaq === 0 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="px-4 pb-4"
+              >
+                <p className="text-sm text-gray-600">
+                  Evet, mağazamızda satılan tüm ürünler %100 orijinal ve yetkili distribütör garantisi 
+                  altındadır. Her ürün için garanti belgesi ve fatura sağlanmaktadır.
+                </p>
+              </motion.div>
+            )}
+          </div>
+
+          {/* FAQ 2 */}
+          <div className="bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
+            <button
+              onClick={() => setExpandedFaq(expandedFaq === 1 ? null : 1)}
+              className="w-full p-4 flex items-center justify-between text-left"
+            >
+              <span className="font-medium text-sm text-gray-900 pr-4">
+                Ürün iadesi ve değişim süreci nasıl işliyor?
+              </span>
+              <HiOutlineChevronDown 
+                className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform ${
+                  expandedFaq === 1 ? 'rotate-180' : ''
+                }`} 
+              />
+            </button>
+            {expandedFaq === 1 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="px-4 pb-4"
+              >
+                <p className="text-sm text-gray-600">
+                  Ürünü teslim aldıktan sonra 14 gün içinde koşulsuz iade hakkınız bulunmaktadır. 
+                  İade sürecini başlatmak için müşteri hizmetlerimizi aramanız veya hesabınızdan 
+                  iade talebi oluşturmanız yeterlidir. Kargo ücreti tarafımızca karşılanır.
+                </p>
+              </motion.div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Shipping Countdown & Return Policy */}
+      <div className="bg-white mt-2 px-4 py-3">
+        <div className="space-y-2">
+          {/* Shipping Countdown */}
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-400 px-3 py-2">
+            <div className="absolute top-0 right-0 w-12 h-12 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="relative flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                <HiOutlineTruck className="w-4 h-4 text-white" />
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-base font-bold text-white">{String(timeUntilMidnight.hours).padStart(2, '0')}:{String(timeUntilMidnight.minutes).padStart(2, '0')}</span>
+                <span className="text-white/90 text-xs">içinde sipariş ver,</span>
+                <span className="font-bold text-white text-xs">yarın kargoda!</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Return Policy */}
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 px-3 py-2">
+            <div className="absolute top-0 right-0 w-10 h-10 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="relative flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                <HiOutlineRefresh className="w-4 h-4 text-white" />
+              </div>
+              <p className="text-white font-semibold text-xs">14 Gün Koşulsuz İade • <span className="font-normal text-white/90">Ücretsiz iade</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Quantity Selector - Only show if not added to cart */}
       {!isAddedToCart && (

@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineSearch, HiOutlineUser, HiOutlineMenu, HiOutlineX, HiArrowLeft, HiOutlineShoppingBag } from 'react-icons/hi';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import PromoBanner from './PromoBanner';
 
 // Animated Logo Component with shine effect
 function Logo() {
@@ -163,8 +164,13 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Promo Banner */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <PromoBanner />
+      </div>
+      
       <nav 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-[45px] left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled ? 'bg-white shadow-sm border-b border-gray-100' : 'bg-white/80 backdrop-blur-md'
         }`}
       >

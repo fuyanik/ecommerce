@@ -48,7 +48,7 @@ export default function SupportPage() {
   const [message, setMessage] = useState('');
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-8">
+    <div className="min-h-screen bg-gray-50 pb-8 pt-[105px]">
       {/* Header */}
       <div className="bg-white px-4 py-8 text-center border-b border-gray-100">
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-50 flex items-center justify-center">

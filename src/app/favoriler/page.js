@@ -11,7 +11,7 @@ export default function FavoritesPage() {
 
   if (wishlist.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center bg-gray-50">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center bg-gray-50 pt-[105px]">
         <div className="w-24 h-24 rounded-full bg-red-50 flex items-center justify-center mb-6">
           <HiOutlineHeart className="w-12 h-12 text-red-300" />
         </div>
@@ -30,7 +30,7 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-[105px]">
       {/* Header */}
       <div className="bg-white px-4 py-6 border-b border-gray-100">
         <h1 className="text-2xl font-bold text-gray-900">Favorilerim</h1>
