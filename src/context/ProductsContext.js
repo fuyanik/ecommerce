@@ -69,9 +69,40 @@ export function ProductsProvider({ children }) {
     return products.filter(p => p.category === categoryId);
   };
 
-  // Öne çıkan ürünleri getir
+  // Öne çıkan ürünleri getir (featured veya homepageSections'da 'featured' olanlar)
   const getFeaturedProducts = () => {
-    return products.filter(p => p.featured === true);
+    return products.filter(p => 
+      p.featured === true || 
+      (p.homepageSections && p.homepageSections.includes('featured'))
+    );
+  };
+
+  // Okul alışverişi ürünlerini getir
+  const getSchoolShoppingProducts = () => {
+    return products.filter(p => 
+      p.homepageSections && p.homepageSections.includes('school')
+    );
+  };
+
+  // En çok favorilenen ürünleri getir
+  const getMostFavoritedProducts = () => {
+    return products.filter(p => 
+      p.homepageSections && p.homepageSections.includes('favorites')
+    );
+  };
+
+  // Sizin için seçtiklerimiz ürünlerini getir
+  const getSelectedForYouProducts = () => {
+    return products.filter(p => 
+      p.homepageSections && p.homepageSections.includes('selected')
+    );
+  };
+
+  // Belirli bir bölümdeki ürünleri getir
+  const getProductsBySection = (sectionId) => {
+    return products.filter(p => 
+      p.homepageSections && p.homepageSections.includes(sectionId)
+    );
   };
 
   // İndirimli ürünleri getir
@@ -105,6 +136,10 @@ export function ProductsProvider({ children }) {
     getProductById,
     getProductsByCategory,
     getFeaturedProducts,
+    getSchoolShoppingProducts,
+    getMostFavoritedProducts,
+    getSelectedForYouProducts,
+    getProductsBySection,
     getDiscountedProducts,
     searchProducts,
     getCategoryById

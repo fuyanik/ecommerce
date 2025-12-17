@@ -187,6 +187,7 @@ export const addProduct = async (productData, imageFiles = []) => {
       specs: specsObj,
       rating: productData.rating || 0,
       reviews: productData.reviews || 0,
+      homepageSections: productData.homepageSections || [],
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     };
@@ -249,6 +250,7 @@ export const updateProduct = async (id, productData, newImageFiles = []) => {
       specs: specsObj,
       rating: parseFloat(productData.rating) || 4.5,
       reviews: parseInt(productData.reviewCount) || 0,
+      homepageSections: productData.homepageSections || [],
       updatedAt: serverTimestamp()
     };
 

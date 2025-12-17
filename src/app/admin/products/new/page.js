@@ -9,7 +9,11 @@ import {
   HiOutlineArrowLeft,
   HiOutlinePhotograph,
   HiOutlineX,
-  HiCheck
+  HiCheck,
+  HiOutlineFire,
+  HiOutlineAcademicCap,
+  HiOutlineHeart,
+  HiOutlineSparkles
 } from 'react-icons/hi';
 import { addProduct, getAllCategories } from '@/lib/productService';
 
@@ -28,8 +32,17 @@ export default function NewProductPage() {
     stock: '',
     featured: false,
     rating: '4.5',
-    reviewCount: ''
+    reviewCount: '',
+    homepageSections: []
   });
+
+  // Homepage sections configuration
+  const homepageSectionsConfig = [
+    { id: 'featured', name: 'Öne Çıkan Ürünler', icon: HiOutlineFire, color: 'from-red-500 to-orange-500', bgColor: 'bg-red-50', textColor: 'text-red-600' },
+    { id: 'school', name: 'Okul Alışverişi', icon: HiOutlineAcademicCap, color: 'from-blue-500 to-indigo-600', bgColor: 'bg-blue-50', textColor: 'text-blue-600' },
+    { id: 'favorites', name: 'En Çok Favorilenenler', icon: HiOutlineHeart, color: 'from-pink-500 to-rose-500', bgColor: 'bg-pink-50', textColor: 'text-pink-600' },
+    { id: 'selected', name: 'Sizin İçin Seçtiklerimiz', icon: HiOutlineSparkles, color: 'from-purple-500 to-violet-600', bgColor: 'bg-purple-50', textColor: 'text-purple-600' }
+  ];
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
   const [specs, setSpecs] = useState([{ key: '', value: '' }]);
@@ -58,6 +71,17 @@ export default function NewProductPage() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const toggleHomepageSection = (sectionId) => {
+    setFormData(prev => {
+      const sections = prev.homepageSections || [];
+      if (sections.includes(sectionId)) {
+        return { ...prev, homepageSections: sections.filter(s => s !== sectionId) };
+      } else {
+        return { ...prev, homepageSections: [...sections, sectionId] };
+      }
+    });
   };
 
   const handleImageChange = (e) => {
@@ -104,7 +128,8 @@ export default function NewProductPage() {
         ...formData,
         rating: parseFloat(formData.rating) || 4.5,
         reviews: parseInt(formData.reviewCount) || 0,
-        specs
+        specs,
+        homepageSections: formData.homepageSections || []
       }, imageFiles);
 
       setSuccess(true);
@@ -356,7 +381,52 @@ export default function NewProductPage() {
               </div>
             </div>
 
-            {/* Featured */}
+            {/* Homepage Sections */}
+            <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm">
+              <div className="mb-4">
+                <label className="text-sm font-medium text-gray-700 block">Ana Sayfada Gösterilecek Bölümler</label>
+                <p className="text-xs text-gray-500 mt-1">Bu ürünün hangi ana sayfa bölümlerinde gösterileceğini seçin</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {homepageSectionsConfig.map((section) => {
+                  const Icon = section.icon;
+                  const isSelected = formData.homepageSections?.includes(section.id);
+                  return (
+                    <button
+                      key={section.id}
+                      type="button"
+                      onClick={() => toggleHomepageSection(section.id)}
+                      className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
+                        isSelected 
+                          ? `border-transparent bg-gradient-to-r ${section.color} text-white shadow-lg` 
+                          : `border-gray-200 bg-gray-50 hover:border-gray-300 text-gray-700`
+                      }`}
+                    >
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        isSelected ? 'bg-white/20' : section.bgColor
+                      }`}>
+                        <Icon className={`w-5 h-5 ${isSelected ? 'text-white' : section.textColor}`} />
+                      </div>
+                      <div className="text-left flex-1">
+                        <p className={`font-medium text-sm ${isSelected ? 'text-white' : 'text-gray-900'}`}>
+                          {section.name}
+                        </p>
+                        <p className={`text-xs ${isSelected ? 'text-white/80' : 'text-gray-500'}`}>
+                          {isSelected ? 'Seçildi' : 'Seçmek için tıklayın'}
+                        </p>
+                      </div>
+                      {isSelected && (
+                        <div className="w-6 h-6 rounded-full bg-white/30 flex items-center justify-center">
+                          <HiCheck className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Featured - Legacy support */}
             <label className="flex items-center gap-3 p-4 bg-white border border-gray-100 rounded-xl cursor-pointer shadow-sm hover:bg-gray-50">
               <input
                 type="checkbox"
@@ -366,8 +436,8 @@ export default function NewProductPage() {
                 className="w-5 h-5 rounded accent-red-500"
               />
               <div>
-                <p className="font-medium text-gray-900">Öne Çıkan Ürün</p>
-                <p className="text-sm text-gray-500">Ana sayfada gösterilsin</p>
+                <p className="font-medium text-gray-900">Öne Çıkan Ürün (Eski)</p>
+                <p className="text-sm text-gray-500">Eski sistem için - Yukarıdaki bölümleri kullanmanız önerilir</p>
               </div>
             </label>
 

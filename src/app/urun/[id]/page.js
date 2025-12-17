@@ -22,6 +22,7 @@ import {
   HiOutlineHome,
   HiShoppingCart,
   HiOutlineChevronDown,
+  HiOutlineChevronRight,
   HiOutlineBadgeCheck,
   HiOutlineRefresh,
   HiOutlineClock
@@ -36,7 +37,7 @@ import SocialProof from '@/components/SocialProof';
 
 export default function ProductPage({ params }) {
   const { id } = use(params);
-  const { isLoading, getProductById, getProductsByCategory } = useProducts();
+  const { isLoading, getProductById, getProductsByCategory, getCategoryById } = useProducts();
   
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -232,8 +233,35 @@ export default function ProductPage({ params }) {
         )}
       </AnimatePresence>
 
+      {/* Breadcrumb Navigation */}
+      <div className="pt-[62px] bg-white border-b border-gray-100">
+        <div className="px-4 py-2">
+          <nav className="flex items-center gap-1 text-xs text-gray-500 overflow-x-auto hide-scrollbar">
+            <Link href="/" className="flex items-center gap-1 hover:text-gray-900 transition-colors whitespace-nowrap">
+              <HiOutlineHome className="w-3 h-3" />
+              <span>Anasayfa</span>
+            </Link>
+            <HiOutlineChevronRight className="w-3 h-3 flex-shrink-0" />
+            {product.category && getCategoryById(product.category) && (
+              <>
+                <Link 
+                  href={`/kategori/${product.category}`} 
+                  className="hover:text-gray-900 transition-colors whitespace-nowrap"
+                >
+                  {getCategoryById(product.category)?.name}
+                </Link>
+                <HiOutlineChevronRight className="w-3 h-3 flex-shrink-0" />
+              </>
+            )}
+            <span className="text-gray-700 font-medium truncate max-w-[150px]">
+              {product.name}
+            </span>
+          </nav>
+        </div>
+      </div>
+
       {/* Countdown Banner */}
-      <div className="pt-[62px]">
+      <div className="bg-white">
         <CountdownBanner />
       </div>
 
@@ -594,6 +622,16 @@ export default function ProductPage({ params }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <style jsx>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }

@@ -14,7 +14,8 @@ import {
   HiOutlineChevronRight,
   HiOutlineUserGroup,
   HiOutlineExclamation,
-  HiOutlineCog
+  HiOutlineCog,
+  HiOutlineTemplate
 } from 'react-icons/hi';
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -159,7 +160,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 py-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-4">
             <Link href="/admin/products" className="p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow group">
               <HiOutlineShoppingBag className="w-6 h-6 text-gray-400 group-hover:text-red-500 mb-2 transition-colors" />
               <p className="font-semibold text-gray-900">Ürünler</p>
@@ -174,6 +175,11 @@ export default function AdminDashboard() {
               <HiOutlineUserGroup className="w-6 h-6 text-gray-400 group-hover:text-red-500 mb-2 transition-colors" />
               <p className="font-semibold text-gray-900">Müşteriler</p>
               <p className="text-sm text-gray-500">Kayıtlı kullanıcılar</p>
+            </Link>
+            <Link href="/admin/homepage" className="p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow group">
+              <HiOutlineTemplate className="w-6 h-6 text-gray-400 group-hover:text-purple-500 mb-2 transition-colors" />
+              <p className="font-semibold text-gray-900">Ana Sayfa</p>
+              <p className="text-sm text-gray-500">Bölüm düzenle</p>
             </Link>
             <Link href="/admin/settings" className="p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow group">
               <HiOutlineCog className="w-6 h-6 text-gray-400 group-hover:text-green-500 mb-2 transition-colors" />

@@ -21,8 +21,9 @@ import {
   HiOutlineRefresh,
   HiArrowLeft
 } from 'react-icons/hi';
-import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
 import { useCart } from '@/context/CartContext';
 
 const steps = ['Bilgiler', 'Adres', 'Ödeme', 'Tamamla'];
@@ -369,9 +370,35 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePaymentComplete = () => {
-    setOrderComplete(true);
-    clearCart();
+  const handlePaymentComplete = async () => {
+    setIsProcessing(true);
+    
+    try {
+      let receiptUrl = null;
+      
+      // Upload receipt to Firebase Storage
+      if (receiptFile && orderId) {
+        const fileName = `receipts/${orderId}_${Date.now()}_${receiptFile.name}`;
+        const fileRef = ref(storage, fileName);
+        await uploadBytes(fileRef, receiptFile);
+        receiptUrl = await getDownloadURL(fileRef);
+        
+        // Update order with receipt URL
+        await updateDoc(doc(db, 'orders', orderId), {
+          receiptUrl: receiptUrl,
+          paymentStatus: 'pending_verification',
+          receiptUploadedAt: serverTimestamp()
+        });
+      }
+      
+      setOrderComplete(true);
+      clearCart();
+    } catch (error) {
+      console.error('Error uploading receipt:', error);
+      alert('Dekont yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const copyToClipboard = (text, field) => {
@@ -408,7 +435,7 @@ export default function CheckoutPage() {
           Sipariş numaranız: <span className="text-gray-900 font-mono font-bold">{generatedOrderNumber}</span>
         </p>
         <p className="text-gray-500 mb-8">
-          Siparişinizle ilgili bilgiler e-posta adresinize gönderilecektir.
+          Siparişinizle ilgili bilgiler alınmıştır. Siparişiniz incelendikten sonra işleme alınacaktır.
         </p>
         <motion.button
           whileTap={{ scale: 0.98 }}
@@ -851,7 +878,7 @@ export default function CheckoutPage() {
               <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl">
                 <h3 className="font-bold text-amber-800 text-sm mb-1">⚠️ Önemli Bilgilendirme</h3>
                 <p className="text-xs text-amber-700 leading-relaxed">
-                  Ödeme işlemi sırasında, ödeme türünün <strong>"E-Ticaret"</strong> olarak seçilmesi ve 
+                  Ödeme işlemi sırasında,  
                   açıklama alanına <strong>sipariş numaranızın</strong> eksiksiz şekilde yazılması zorunludur.
                 </p>
                 </div>

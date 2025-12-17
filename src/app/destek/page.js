@@ -12,6 +12,7 @@ import {
   HiOutlinePhone,
   HiOutlineMail
 } from 'react-icons/hi';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const faqs = [
   {
@@ -48,7 +49,7 @@ export default function SupportPage() {
   const [message, setMessage] = useState('');
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-8 pt-[105px]">
+    <div className="min-h-screen bg-gray-50 pb-8 pt-[10vh]">
       {/* Header */}
       <div className="bg-white px-4 py-8 text-center border-b border-gray-100">
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-50 flex items-center justify-center">
@@ -62,19 +63,35 @@ export default function SupportPage() {
       <div className="px-4 py-6">
         <div className="grid grid-cols-2 gap-3">
           {categories.map((cat, index) => (
-            <motion.button
+            <motion.div
               key={cat.title}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="p-4 bg-white border border-gray-100 rounded-2xl text-left hover:shadow-md transition-shadow shadow-sm"
+              className="px-3 py-2 bg-white border border-gray-100 rounded-xl flex items-center gap-2 shadow-sm"
             >
-              <div className={`w-10 h-10 rounded-xl ${cat.color} flex items-center justify-center mb-3`}>
-                <cat.icon className="w-5 h-5" />
+              <div className={`w-8 h-8 rounded-lg ${cat.color} flex items-center justify-center flex-shrink-0`}>
+                <cat.icon className="w-4 h-4" />
               </div>
-              <span className="font-medium text-sm text-gray-900">{cat.title}</span>
-            </motion.button>
+              <span className="font-medium text-xs text-gray-900">{cat.title}</span>
+            </motion.div>
           ))}
+        </div>
+
+        {/* WhatsApp Contact */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600 mb-3">
+            Tüm sorularınız için WhatsApp üzerinden iletişime geçebilirsiniz
+          </p>
+          <a
+            href="https://wa.me/905551234567"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 group"
+          >
+            <FaWhatsapp className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            <span className="text-md font-semibold tracking-wide">+90 555 123 45 67</span>
+          </a>
         </div>
       </div>
 
