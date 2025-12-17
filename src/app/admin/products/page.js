@@ -25,6 +25,7 @@ export default function AdminProductsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [isDeletingCategory, setIsDeletingCategory] = useState(false);
 
   useEffect(() => {
     const adminAuth = localStorage.getItem('admin_auth');
@@ -104,6 +105,40 @@ export default function AdminProductsPage() {
       alert('Ürün silinirken bir hata oluştu: ' + err.message);
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleDeleteAllInCategory = async () => {
+    const categoryName = getCategoryName(selectedCategory);
+    const productsInCategory = products.filter(p => p.category === selectedCategory);
+    
+    if (productsInCategory.length === 0) {
+      alert('Bu kategoride silinecek ürün bulunmuyor.');
+      return;
+    }
+
+    const confirmed = confirm(
+      `"${categoryName}" kategorisindeki ${productsInCategory.length} ürünü silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz!`
+    );
+    
+    if (!confirmed) return;
+
+    setIsDeletingCategory(true);
+    
+    try {
+      for (const product of productsInCategory) {
+        await deleteProduct(product.id);
+      }
+      
+      setProducts(prev => prev.filter(p => p.category !== selectedCategory));
+      setSelectedCategory('all');
+      
+      alert(`${productsInCategory.length} ürün başarıyla silindi.`);
+    } catch (err) {
+      alert('Ürünler silinirken bir hata oluştu: ' + err.message);
+      fetchData();
+    } finally {
+      setIsDeletingCategory(false);
     }
   };
 
@@ -219,6 +254,31 @@ export default function AdminProductsPage() {
                   );
                 })}
               </div>
+
+              {/* Delete All in Category Button */}
+              {selectedCategory !== 'all' && filteredProducts.length > 0 && (
+                <button
+                  onClick={handleDeleteAllInCategory}
+                  disabled={isDeletingCategory}
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                    isDeletingCategory
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-red-500 text-white hover:bg-red-600'
+                  }`}
+                >
+                  {isDeletingCategory ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Siliniyor...
+                    </>
+                  ) : (
+                    <>
+                      <HiOutlineTrash className="w-4 h-4" />
+                      Bu Kategorideki Tüm Ürünleri Sil ({filteredProducts.length})
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           )}
 

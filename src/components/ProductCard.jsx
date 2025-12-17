@@ -43,14 +43,17 @@ export default function ProductCard({ product, index = 0 }) {
     addToCart(product, 1);
   };
 
+  // Sadece ilk 12 ürün için animasyon, gerisi anında görünsün
+  const shouldAnimate = index < 12;
+  
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
+      transition={shouldAnimate ? { delay: index * 0.03, duration: 0.2 } : { duration: 0 }}
       className="group relative"
     >
-      <Link href={`/urun/${product.id}`} className="touch-manipulation">
+      <Link href={`/urun/${product.id}`} className="block touch-manipulation">
         <div className="bg-white rounded-2xl overflow-hidden shadow-sm md:hover:shadow-lg transition-all duration-300 border border-gray-100">
           {/* Image Container with Pastel Background */}
           <div className={`relative aspect-square ${bgColor} p-4`}>

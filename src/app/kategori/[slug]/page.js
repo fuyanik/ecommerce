@@ -26,6 +26,7 @@ export default function CategoryPage({ params }) {
   const [sortBy, setSortBy] = useState('popular');
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
+  const [visibleCount, setVisibleCount] = useState(20); // Başlangıçta 20 ürün göster
 
   useEffect(() => {
     if (!isLoading) {
@@ -35,6 +36,7 @@ export default function CategoryPage({ params }) {
         const categoryProducts = getProductsByCategory(slug);
         setProducts(categoryProducts);
         setFilteredProducts(categoryProducts);
+        setVisibleCount(20); // Kategori değişince sıfırla
       }
     }
   }, [slug, isLoading, getCategoryById, getProductsByCategory]);
@@ -71,6 +73,7 @@ export default function CategoryPage({ params }) {
     }
 
     setFilteredProducts(filtered);
+    setVisibleCount(20); // Filtre değişince sıfırla
   }, [products, searchQuery, sortBy, priceRange]);
 
   if (isLoading) {
@@ -154,11 +157,25 @@ export default function CategoryPage({ params }) {
       {/* Products Grid */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredProducts.map((product, index) => (
-              <ProductCard key={product.id} product={product} index={index} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {filteredProducts.slice(0, visibleCount).map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
+            </div>
+            
+            {/* Daha Fazla Yükle Butonu */}
+            {visibleCount < filteredProducts.length && (
+              <div className="text-center mt-8">
+                <button
+                  onClick={() => setVisibleCount(prev => prev + 20)}
+                  className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-xl hover:bg-red-500 transition-colors"
+                >
+                  Daha Fazla Göster ({filteredProducts.length - visibleCount} ürün kaldı)
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">Bu kriterlere uygun ürün bulunamadı.</p>
