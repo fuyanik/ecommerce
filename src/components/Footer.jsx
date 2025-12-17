@@ -1,133 +1,103 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { 
-  HiOutlineMail, 
-  HiOutlinePhone, 
-  HiOutlineLocationMarker 
-} from 'react-icons/hi';
-import { 
-  FaFacebookF, 
-  FaTwitter, 
-  FaInstagram, 
-  FaYoutube 
-} from 'react-icons/fa';
+import { FaWhatsapp, FaHeart, FaShoppingCart, FaHeadset, FaHome, FaInfoCircle, FaShieldAlt } from 'react-icons/fa';
+import logosaydam from '../assets/logosaydam.png';
+import footerlogo1 from '../assets/footerlogo1.webp';
+import footerlogo2 from '../assets/footerlogo2.webp';
+import maliyeLogo from '../assets/maliye.png';
+import manisaLogo from '../assets/manisa.png';
+
 
 export default function Footer() {
+  const phoneNumber = '905551234567'; // WhatsApp numarası (başında 90 ile)
+  const whatsappUrl = `https://wa.me/${phoneNumber}`;
+
+  const footerLinks = [
+    { name: 'Ana Sayfa', href: '/', icon: FaHome },
+    { name: 'Favorilerim', href: '/favoriler', icon: FaHeart },
+    { name: 'Sepetim', href: '/sepet', icon: FaShoppingCart },
+    { name: 'Destek', href: '/destek', icon: FaHeadset },
+  ];
+
   return (
-    <footer className="bg-white border-t border-gray-100">
-      {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-400 flex items-center justify-center shadow-lg">
-                <span className="text-white font-black text-lg">M</span>
-              </div>
-              <div>
-                <span className="font-bold text-lg text-gray-900">Mobilya</span>
-                <span className="text-xs text-gray-500 block">EV & DEKOR</span>
-              </div>
-            </div>
-            <p className="text-sm text-gray-500 mb-4">
-              Eviniz için en kaliteli mobilya ve beyaz eşya ürünleri.
-              Güvenilir alışveriş, hızlı teslimat.
-            </p>
-            <div className="flex gap-3">
-              {[FaFacebookF, FaTwitter, FaInstagram, FaYoutube].map((Icon, index) => (
-                <a
-                  key={index}
-                  href="#"
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-500 hover:text-white text-gray-600 transition-colors"
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
-          </div>
-
+    <footer className='w-full bg-gray-50'>
+      {/* Upper Footer - Quick Links & Certifications */}
+      <div className='w-full bg-gray-100 py-6 px-4'>
+        <div className='max-w-4xl mx-auto'>
           {/* Quick Links */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Kurumsal</h3>
-            <ul className="space-y-2">
-              {['Hakkımızda', 'Kariyer', 'Blog', 'Basın', 'İletişim'].map((item) => (
-                <li key={item}>
-                  <Link href="#" className="text-sm text-gray-500 hover:text-red-500 transition-colors">
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+        
 
-          {/* Categories */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Kategoriler</h3>
-            <ul className="space-y-2">
-              {[
-                { name: 'Koltuk Takımları', href: '/kategori/koltuk-takimi' },
-                { name: 'Yatak Odası', href: '/kategori/yatak-odasi' },
-                { name: 'Yemek Odası', href: '/kategori/yemek-odasi' },
-                { name: 'Beyaz Eşya', href: '/kategori/beyaz-esya' },
-                { name: 'Küçük Ev Aletleri', href: '/kategori/kucuk-ev-aletleri' },
-              ].map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-gray-500 hover:text-red-500 transition-colors">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">İletişim</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2">
-                <HiOutlineLocationMarker className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-gray-500">
-                  İstanbul, Türkiye
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <HiOutlinePhone className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <span className="text-sm text-gray-500">
-                  0850 123 45 67
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <HiOutlineMail className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <span className="text-sm text-gray-500">
-                  info@mobilya.com
-                </span>
-              </li>
-            </ul>
+          {/* Certifications */}
+          <div className='bg-white rounded-xl p-4 shadow-sm'>
+            <div className='flex items-center justify-center gap-2 mb-3'>
+              <FaShieldAlt className='w-5 h-5 text-green-600' />
+              <h3 className='text-sm font-semibold text-gray-700'>Resmi Onaylı Kuruluş</h3>
+            </div>
+            
+            <div className='flex items-center justify-center gap-8 mb-4'>
+              <div className='flex flex-col items-center'>
+                <Image 
+                  src={maliyeLogo} 
+                  alt="T.C. Hazine ve Maliye Bakanlığı" 
+                  width={120} 
+                  height={120}
+                  className='object-contain'
+                />
+              </div>
+              <div className='flex flex-col items-center'>
+                <Image 
+                  src={manisaLogo} 
+                  alt="Manisa Ticaret Odası" 
+                  width={120} 
+                  height={120}
+                  className='object-contain'
+                />
+              </div>
+            </div>
+            
+            <p className='text-center text-xs text-gray-500 leading-relaxed'>
+              Firmamız <span className='font-semibold'>T.C. Hazine ve Maliye Bakanlığı</span> ve <span className='font-semibold'>Manisa Ticaret Odası</span> tarafından 
+              onaylı, tüm yasal gereklilikleri yerine getiren güvenilir bir e-ticaret platformudur.
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-gray-100 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-500">
-              © 2024 Mobilya Ev & Dekor. Tüm hakları saklıdır.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500">
-              <Link href="#" className="hover:text-red-500 transition-colors">
-                Gizlilik Politikası
-              </Link>
-              <Link href="#" className="hover:text-red-500 transition-colors">
-                Kullanım Koşulları
-              </Link>
-              <Link href="#" className="hover:text-red-500 transition-colors">
-                KVKK
-              </Link>
-            </div>
-          </div>
-        </div>
+      {/* Main Footer Content */}
+      <div className='w-full flex flex-col items-center pt-6 pb-10 px-4'>
+      <Image src={logosaydam} alt="Logo" width={180} height={190} />
+      <p className='text-gray-500 -mt-8 text-sm mb-6'>Müşteri Hizmetleri | Çağrı Hattı</p>
+      
+      {/* WhatsApp Button */}
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-[80vw] -mt-3 max-w-ms flex items-center justify-center gap-3 px-2 py-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 group"
+      >
+        <FaWhatsapp className="w-6 h-6 group-hover:scale-110 transition-transform" />
+        <span className="text-md font-semibold tracking-wide">+90 555 123 45 67</span>
+      </a>
+      
+      {/* Working Hours */}
+      <p className="mt-3 text-xs text-gray-500">
+        Pazartesi - Cumartesi | 09.00 - 18.00
+      </p>
+    
+      <Image className='mt-4' src={footerlogo1} alt="Logo" width={220}  />
+    
+      <Image className='mt-4' src={footerlogo2} alt="Logo" width={140}  />
+         <p className='text-center text-[13px] text-gray-500 mt-4'>
+          <span className='font-bold' > Çizgi  Ticaret Limited Şirketi,</span> 2014 yılından bu yana Manisanın Akhisar ilçesinde faaliyet gösteren, elektronik ürünler, küçük ev aletleri, bilgisayar ekipmanları, ofis ürünleri ve günlük yaşam teknolojileri alanında uzmanlaşmış güvenilir bir e-ticaret platformudur. Kurulduğu günden itibaren müşterilerine hem güvenli hem de sorunsuz bir alışveriş deneyimi sunmak için modern altyapılar ve yüksek güvenlik standartlarıyla hizmet vermektedir.
+         </p>
+         <p className='text-center text-[13px] text-gray-500 mt-4'> <span className='font-bold' >  Çizgiticaret.com </span> üzerinden yapacağınız alışverişlerde kredi kartı bilgileriniz yalnızca ödeme işlemi sırasında kullanılır ve kesinlikle veri tabanında saklanmaz. Böylece ödeme bilgileriniz üçüncü tarafların erişimine karşı tamamen güvence altındadır.</p>
+         <p className='text-center text-[13px] text-gray-500 mt-4'>Sitemizde gerçekleştirilen tüm işlemlerin gerçekten  <span className='font-bold' >  çizgiticaret.com </span> sunucularına iletildiğini garanti altına almak için gelişmiş  <span className='font-bold' >  256 bit SSL sertifikası </span>  kullanılmaktadır. Bu teknoloji sayesinde aktardığınız tüm kişisel veriler şifrelenerek güvenli bir şekilde işlenir ve yetkisiz erişimlere karşı korunur.</p>
+         <p className='text-center text-[13px] text-gray-500 mt-4'>Çizgi Ticaret, kullanıcı güvenliğini temel ilke olarak benimser. Hem teknik altyapımızı hem de veri koruma sistemlerimizi düzenli olarak güncelleyerek güvenli alışveriş ortamını daima en üst seviyede tutarız. Amacımız; müşterilerimize hızlı, modern, şeffaf ve güven veren bir alışveriş deneyimi sunmak, satın aldığınız her ürünü sorunsuz şekilde size ulaştırmaktır.</p>
+         <p className='text-center text-[13px] text-gray-500 mt-4'>Çizgi Ticaret olarak, güvenli alışverişin standartlarını yükseltmeye ve kullanıcılarımıza her zaman konforlu bir deneyim sunmaya devam ediyoruz.</p>
+  
+  <div className='w-full mt-4 text-xs bg-black text-white p-3 rounded-md text-center'> ©2014-2025  ÇİZGİ TİCARET "Çizgi Ticaret Limited Şirketi" KURULUŞUDUR.</div>
       </div>
     </footer>
   );

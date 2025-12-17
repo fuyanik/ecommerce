@@ -4,10 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
+import { Autoplay, Pagination, FreeMode } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { HiOutlineChevronRight, HiOutlineTruck, HiOutlineShieldCheck, HiOutlineCreditCard, HiOutlineSupport } from 'react-icons/hi';
+import 'swiper/css/free-mode';
+import { HiOutlineChevronRight, HiOutlineChevronLeft, HiOutlineTruck, HiOutlineShieldCheck, HiOutlineCreditCard, HiOutlineSupport, HiOutlineFire } from 'react-icons/hi';
 import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
 import { useProducts } from '@/context/ProductsContext';
@@ -64,7 +65,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pt-[105px]">
+    <div className="bg-gray-50 min-h-screen pt-[8vh]">
       {/* Hero Slider */}
       <section className="relative">
         <Swiper
@@ -118,24 +119,77 @@ export default function HomePage() {
         </Swiper>
       </section>
 
-      {/* Features Bar */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-3 p-2">
-                <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
-                  <feature.icon className="w-5 h-5 text-red-500" />
+{/* Featured Products - Horizontal Scroll */}
+      {featuredProducts.length > 0 && (
+        <section className="py-8 bg-gradient-to-b from-white to-gray-50">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6 px-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg shadow-red-500/30">
+                  <HiOutlineFire className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900 text-sm">{feature.title}</p>
-                  <p className="text-xs text-gray-500">{feature.description}</p>
+                  <h2 className="text-xl font-bold text-gray-900">Öne Çıkan Ürünler</h2>
+                  <p className="text-sm text-gray-500">En çok tercih edilen ürünler</p>
                 </div>
               </div>
-            ))}
+              <Link 
+                href="/firsatlar" 
+                className="hidden sm:flex items-center gap-1 px-4 py-2 bg-red-50 text-red-600 rounded-full text-sm font-medium hover:bg-red-100 transition-colors"
+              >
+                Tümünü Gör <HiOutlineChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+            
+            {/* Swiper Carousel */}
+            <div className="relative group">
+              <Swiper
+                modules={[FreeMode]}
+                spaceBetween={16}
+                slidesPerView={2.2}
+                freeMode={true}
+                grabCursor={true}
+                className="!px-4"
+                breakpoints={{
+                  480: { slidesPerView: 2.5, spaceBetween: 16 },
+                  640: { slidesPerView: 3.2, spaceBetween: 16 },
+                  768: { slidesPerView: 3.5, spaceBetween: 20 },
+                  1024: { slidesPerView: 4.5, spaceBetween: 20 },
+                  1280: { slidesPerView: 5.2, spaceBetween: 24 },
+                }}
+              >
+                {featuredProducts.map((product, index) => (
+                  <SwiperSlide key={product.id}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <ProductCard product={product} index={index} />
+                    </motion.div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              
+              {/* Gradient Fade Effects */}
+              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
+            </div>
+
+            {/* Mobile View All Button */}
+            <div className="mt-4 px-4 sm:hidden">
+              <Link 
+                href="/firsatlar" 
+                className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium shadow-lg shadow-red-500/30"
+              >
+                Tüm Ürünleri Gör <HiOutlineChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+      
 
       {/* Categories - Modern Design with Images */}
       <section className="py-8 px-4">
@@ -181,28 +235,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      {featuredProducts.length > 0 && (
-        <section className="py-8 px-4 bg-white">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">Öne Çıkan Ürünler</h2>
-                <p className="text-sm text-gray-500">En çok tercih edilen ürünler</p>
-              </div>
-              <Link href="/firsatlar" className="text-sm font-medium text-red-500 hover:text-red-600 flex items-center gap-1">
-                Tümü <HiOutlineChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {featuredProducts.slice(0, 8).map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+     
 
       {/* Banner */}
       <section className="py-8 px-4">
@@ -316,6 +349,25 @@ export default function HomePage() {
               <div className="text-4xl font-bold text-red-400 mb-2">24/7</div>
               <div className="text-gray-400">Destek</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Bar */}
+      <section className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-center gap-3 p-2">
+                <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                  <feature.icon className="w-5 h-5 text-red-500" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">{feature.title}</p>
+                  <p className="text-xs text-gray-500">{feature.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

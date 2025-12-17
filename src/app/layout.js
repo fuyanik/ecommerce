@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "1001 Çarşı AVM - Online Alışveriş",
+  title: "Çizgi Ticaret - Online Alışveriş",
   description: "Teknoloji, ev eşyaları, mobilya, bebek ürünleri ve daha fazlası. Güvenli ve hızlı alışveriş.",
 };
 

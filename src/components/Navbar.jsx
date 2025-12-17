@@ -9,94 +9,23 @@ import { HiOutlineSearch, HiOutlineUser, HiOutlineMenu, HiOutlineX, HiArrowLeft,
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import PromoBanner from './PromoBanner';
+import logosaydam from '../assets/logosaydam.png';
 
 // Animated Logo Component with shine effect
 function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2 group">
-      <motion.div 
-        className="relative flex items-center"
-        whileHover={{ scale: 1.02 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-      >
-        {/* Main Logo Text - Horizontal */}
+    <Link href="/" className="flex items-center mt-3 mr-2  group">
+     
         <div className="relative overflow-hidden">
           {/* Background glow effect */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
-            animate={{
-              x: ['-200%', '200%'],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              repeatDelay: 2,
-              ease: 'easeInOut',
-            }}
-          />
+        
           
-          <div className="flex items-center gap-1.5 relative">
-            {/* 1001 */}
-            <span className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tighter">
-              1001
-            </span>
-            
-            {/* ÇARŞI with AVM */}
-            <div className="relative">
-              <span className="text-2xl sm:text-3xl font-black text-gray-900 tracking-wide">
-                ÇARŞI
-              </span>
-              
-              {/* AVM - positioned at bottom right diagonal */}
-              <motion.span 
-                className="absolute -bottom-1 -right-3 text-[8px] sm:text-[9px] font-bold text-white bg-gray-900 px-1.5 py-0.5 rounded tracking-widest italic"
-                style={{ transform: 'rotate(-5deg)' }}
-                animate={{
-                  boxShadow: [
-                    '0 0 0px rgba(0,0,0,0.3)',
-                    '0 0 8px rgba(0,0,0,0.5)',
-                    '0 0 0px rgba(0,0,0,0.3)',
-                  ],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              >
-                AVM
-              </motion.span>
-            </div>
-          </div>
+          <Image  src={logosaydam} alt="Logo" width={150} height={140} />
+      
         </div>
         
         {/* Sparkle effects */}
-        <motion.div
-          className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full"
-          animate={{
-            scale: [0, 1, 0],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            repeatDelay: 3,
-          }}
-        />
-        <motion.div
-          className="absolute top-2 -right-2 w-1.5 h-1.5 bg-yellow-300 rounded-full"
-          animate={{
-            scale: [0, 1, 0],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            repeatDelay: 3,
-            delay: 0.3,
-          }}
-        />
-      </motion.div>
+      
     </Link>
   );
 }
@@ -174,7 +103,7 @@ export default function Navbar() {
           isScrolled ? 'bg-white shadow-sm border-b border-gray-100' : 'bg-white/80 backdrop-blur-md'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-1">
           <div className="h-[60px] flex items-center justify-between">
             {/* Logo */}
             <Logo />

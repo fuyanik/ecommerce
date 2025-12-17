@@ -21,17 +21,17 @@ import {
   HiOutlineRefresh,
   HiArrowLeft
 } from 'react-icons/hi';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useCart } from '@/context/CartContext';
 
 const steps = ['Bilgiler', 'Adres', 'Ödeme', 'Tamamla'];
 
 const cargoCompanies = [
-  { id: 'yurtici', name: 'Yurtiçi Kargo', logo: '📦' },
-  { id: 'aras', name: 'Aras Kargo', logo: '🚚' },
-  { id: 'ptt', name: 'PTT Kargo', logo: '📮' },
-  { id: 'surat', name: 'Sürat Kargo', logo: '⚡' },
+  { id: 'yurtici', name: 'Yurtiçi Kargo', logo: '/assets/memleket.png', scale: 'scale-125' },
+  { id: 'aras', name: 'Aras Kargo', logo: '/assets/araskargo.png', scale: 'scale-125' },
+  { id: 'ptt', name: 'PTT Kargo', logo: '/assets/pttkargo.png', scale: 'scale-100' },
+  { id: 'surat', name: 'Sürat Kargo', logo: '/assets/suratkargo.png', scale: 'scale-125' },
 ];
 
 const faqs = [
@@ -201,16 +201,57 @@ export default function CheckoutPage() {
     orderNote: ''
   });
 
+  const [paymentSettings, setPaymentSettings] = useState({
+    iban: 'TR12 3456 7890 1234 5678 9012 34',
+    accountHolder: '1001 ÇARŞI TİCARET A.Ş.',
+    bankName: ''
+  });
+
+  const [bannerMessageIndex, setBannerMessageIndex] = useState(0);
+  const bannerMessages = [
+    { text: '1427 kişi bugün alışveriş yaptı', number: '1427' },
+    { text: '2873 kişi siteyi inceliyor', number: '2873' }
+  ];
+
   useEffect(() => {
     if (cart.length === 0 && !orderComplete) {
     router.push('/sepet');
   }
   }, [cart, orderComplete, router]);
 
+  // Fetch payment settings from Firebase
+  useEffect(() => {
+    const fetchPaymentSettings = async () => {
+      try {
+        const settingsDoc = await getDoc(doc(db, 'settings', 'payment'));
+        if (settingsDoc.exists()) {
+          const data = settingsDoc.data();
+          setPaymentSettings({
+            iban: data.iban || 'TR12 3456 7890 1234 5678 9012 34',
+            accountHolder: data.accountHolder || '1001 ÇARŞI TİCARET A.Ş.',
+            bankName: data.bankName || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching payment settings:', error);
+      }
+    };
+
+    fetchPaymentSettings();
+  }, []);
+
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Banner message rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBannerMessageIndex((prev) => (prev + 1) % bannerMessages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [bannerMessages.length]);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('tr-TR', {
@@ -456,9 +497,24 @@ export default function CheckoutPage() {
         {/* Content */}
         <div className="relative flex items-center justify-center gap-2">
           <HiCheckCircle className="w-4 h-4 text-green-400 animate-pulse" />
-          <span className="text-[11px] sm:text-xs font-medium whitespace-nowrap">
-            <span className="font-bold text-green-400">703</span> kişi bugün alışveriş yaptı
-          </span>
+          
+          {/* Rotating Message */}
+          <div className="relative h-5 flex items-center overflow-hidden min-w-[180px]">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={bannerMessageIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4 }}
+                className="text-[11px] sm:text-xs font-medium whitespace-nowrap absolute left-0"
+              >
+                <span className="font-bold text-green-400">{bannerMessages[bannerMessageIndex].number}</span>{' '}
+                {bannerMessages[bannerMessageIndex].text.replace(bannerMessages[bannerMessageIndex].number + ' ', '')}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+          
           <span className="text-white/50">•</span>
           <span className="text-[11px] sm:text-xs font-medium whitespace-nowrap">
             Güvenli Ödeme <span className="font-bold text-yellow-400">%100</span>
@@ -680,14 +736,18 @@ export default function CheckoutPage() {
                     <button
                       key={cargo.id}
                       onClick={() => setSelectedCargo(cargo.id)}
-                      className={`p-2 rounded-lg border-2 transition-all ${
+                      className={`relative h-14 rounded-xl border-2 transition-all overflow-hidden ${
                         selectedCargo === cargo.id
-                          ? 'border-indigo-600 bg-indigo-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-indigo-600 bg-white shadow-md'
+                          : 'border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                     >
-                      <div className="text-xl mb-0.5">{cargo.logo}</div>
-                      <div className="text-[9px] font-medium text-gray-700 leading-tight">{cargo.name}</div>
+                      <Image
+                        src={cargo.logo}
+                        alt={cargo.name}
+                        fill
+                        className={`object-contain ${cargo.scale}`}
+                      />
                     </button>
                   ))}
                 </div>
@@ -811,10 +871,10 @@ export default function CheckoutPage() {
                   <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
                     <div>
                       <div className="text-[10px] text-gray-500">IBAN</div>
-                      <div className="font-mono font-medium text-gray-900 text-xs">TR12 3456 7890 1234 5678 9012 34</div>
+                      <div className="font-mono font-medium text-gray-900 text-xs">{paymentSettings.iban}</div>
                     </div>
                     <button 
-                      onClick={() => copyToClipboard('TR12345678901234567890123434', 'iban')}
+                      onClick={() => copyToClipboard(paymentSettings.iban.replace(/\s/g, ''), 'iban')}
                       className={`p-1.5 rounded-lg transition-colors ${copied === 'iban' ? 'bg-green-100 text-green-600' : 'bg-gray-200 hover:bg-gray-300 text-gray-600'}`}
                     >
                       {copied === 'iban' ? <HiCheck className="w-4 h-4" /> : <HiOutlineClipboardCopy className="w-4 h-4" />}
@@ -825,15 +885,25 @@ export default function CheckoutPage() {
                   <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
                     <div>
                       <div className="text-[10px] text-gray-500">Hesap Sahibi</div>
-                      <div className="font-medium text-gray-900 text-xs">1001 ÇARŞI TİCARET A.Ş.</div>
+                      <div className="font-medium text-gray-900 text-xs">{paymentSettings.accountHolder}</div>
                     </div>
                     <button 
-                      onClick={() => copyToClipboard('1001 ÇARŞI TİCARET A.Ş.', 'holder')}
+                      onClick={() => copyToClipboard(paymentSettings.accountHolder, 'holder')}
                       className={`p-1.5 rounded-lg transition-colors ${copied === 'holder' ? 'bg-green-100 text-green-600' : 'bg-gray-200 hover:bg-gray-300 text-gray-600'}`}
                     >
                       {copied === 'holder' ? <HiCheck className="w-4 h-4" /> : <HiOutlineClipboardCopy className="w-4 h-4" />}
                     </button>
                   </div>
+
+                  {/* Bank Name (if provided) */}
+                  {paymentSettings.bankName && (
+                    <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
+                      <div>
+                        <div className="text-[10px] text-gray-500">Banka</div>
+                        <div className="font-medium text-gray-900 text-xs">{paymentSettings.bankName}</div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Order Number */}
                   <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
