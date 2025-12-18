@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ProductsProvider } from "@/context/ProductsContext";
 import Navbar from "@/components/Navbar";
 import BottomNavbar from "@/components/BottomNavbar";
+import VisitorTracker from "@/components/VisitorTracker";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
           <ProductsProvider>
             <CartProvider>
               <WishlistProvider>
+                <VisitorTracker />
                 <Navbar />
                 <main className="min-h-screen">
                   {children}

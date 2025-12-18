@@ -15,11 +15,19 @@ import {
   HiOutlineUserGroup,
   HiOutlineExclamation,
   HiOutlineCog,
-  HiOutlineTemplate
+  HiOutlineTemplate,
+  HiOutlineEye,
+  HiOutlineX,
+  HiOutlineDesktopComputer,
+  HiOutlineDeviceMobile,
+  HiOutlineGlobe,
+  HiOutlineLocationMarker,
+  HiOutlineClock
 } from 'react-icons/hi';
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { getAllProducts, getAllCategories } from '@/lib/productService';
+import { subscribeToActiveVisitors, getVisitorHistory } from '@/lib/visitorService';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -34,6 +42,10 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeVisitors, setActiveVisitors] = useState([]);
+  const [visitorHistory, setVisitorHistory] = useState([]);
+  const [showVisitorModal, setShowVisitorModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('active');
 
   useEffect(() => {
     const adminAuth = localStorage.getItem('admin_auth');
@@ -78,16 +90,56 @@ export default function AdminDashboard() {
       setStats(prev => ({ ...prev, incompleteUsers: snapshot.size }));
     });
 
+    // Subscribe to active visitors
+    const unsubVisitors = subscribeToActiveVisitors((visitors) => {
+      setActiveVisitors(visitors);
+    });
+
     return () => {
       unsubOrders();
       unsubCompleted();
       unsubIncomplete();
+      unsubVisitors();
     };
   }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem('admin_auth');
     router.push('/admin');
+  };
+
+  const handleOpenVisitorModal = async () => {
+    setShowVisitorModal(true);
+    // Load visitor history when modal opens
+    const history = await getVisitorHistory();
+    setVisitorHistory(history);
+  };
+
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return '-';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleTimeString('tr-TR', { 
+      hour: '2-digit', 
+      minute: '2-digit'
+    });
+  };
+
+  const formatFullDate = (timestamp) => {
+    if (!timestamp) return '-';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleString('tr-TR', { 
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit', 
+      minute: '2-digit'
+    });
+  };
+
+  const getDeviceIcon = (device) => {
+    if (device === 'Mobil' || device === 'Tablet') {
+      return <HiOutlineDeviceMobile className="w-4 h-4" />;
+    }
+    return <HiOutlineDesktopComputer className="w-4 h-4" />;
   };
 
   const formatPrice = (price) => {
@@ -120,16 +172,35 @@ export default function AdminDashboard() {
             </div>
             <div>
               <span className="font-bold text-gray-900">Admin Panel</span>
-              <p className="text-xs text-gray-500">Mobilya Ev & Dekor</p>
+              <p className="text-xs text-gray-500">Çizgi Ticaret Yönetim</p>
             </div>
           </div>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-          >
-            <HiOutlineLogout className="w-5 h-5" />
-            Çıkış
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Live Visitor Counter */}
+            <motion.button
+              onClick={handleOpenVisitorModal}
+              className="relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {/* Pulsing dot */}
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+              </span>
+              <HiOutlineEye className="w-5 h-5" />
+              <span className="font-bold text-lg">{activeVisitors.length}</span>
+              <span className="text-sm font-medium opacity-90">Aktif</span>
+            </motion.button>
+
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <HiOutlineLogout className="w-5 h-5" />
+              Çıkış
+            </button>
+          </div>
         </div>
       </header>
 
@@ -291,6 +362,213 @@ export default function AdminDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Visitor Detail Modal */}
+      {showVisitorModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          onClick={() => setShowVisitorModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="w-full max-w-4xl max-h-[85vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-emerald-500 to-teal-500 p-6 text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="relative flex h-4 w-4">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-white"></span>
+                  </span>
+                  <h2 className="text-2xl font-bold">Canlı Ziyaretçi Takibi</h2>
+                </div>
+                <button
+                  onClick={() => setShowVisitorModal(false)}
+                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  <HiOutlineX className="w-6 h-6" />
+                </button>
+              </div>
+              <p className="mt-2 text-white/80">Şu anda sitede {activeVisitors.length} aktif ziyaretçi var</p>
+              
+              {/* Tabs */}
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => setActiveTab('active')}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'active' 
+                      ? 'bg-white text-emerald-600' 
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    Aktif ({activeVisitors.length})
+                  </div>
+                </button>
+                <button
+                  onClick={() => setActiveTab('history')}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'history' 
+                      ? 'bg-white text-emerald-600' 
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <HiOutlineClock className="w-4 h-4" />
+                    Geçmiş (24 saat)
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(85vh-200px)]">
+              {activeTab === 'active' ? (
+                <div className="space-y-4">
+                  {activeVisitors.length > 0 ? (
+                    activeVisitors.map((visitor, index) => (
+                      <motion.div
+                        key={visitor.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-white rounded-lg shadow-sm">
+                              {getDeviceIcon(visitor.device)}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold text-gray-900">{visitor.device}</span>
+                                <span className="text-xs px-2 py-0.5 bg-emerald-500 text-white rounded-full">Aktif</span>
+                              </div>
+                              <p className="text-sm text-gray-600">{visitor.browser} • {visitor.os}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-gray-500">Giriş: {formatTimestamp(visitor.enteredAt)}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+                          <div className="p-2 bg-white rounded-lg">
+                            <div className="flex items-center gap-2 text-gray-500 mb-1">
+                              <HiOutlineGlobe className="w-4 h-4" />
+                              <span className="text-xs">IP Adresi</span>
+                            </div>
+                            <p className="font-mono text-sm font-medium text-gray-900">{visitor.ip}</p>
+                          </div>
+                          <div className="p-2 bg-white rounded-lg">
+                            <div className="flex items-center gap-2 text-gray-500 mb-1">
+                              <HiOutlineLocationMarker className="w-4 h-4" />
+                              <span className="text-xs">Konum</span>
+                            </div>
+                            <p className="text-sm font-medium text-gray-900">{visitor.city}, {visitor.country}</p>
+                          </div>
+                          <div className="p-2 bg-white rounded-lg">
+                            <div className="flex items-center gap-2 text-gray-500 mb-1">
+                              <HiOutlineEye className="w-4 h-4" />
+                              <span className="text-xs">Sayfa</span>
+                            </div>
+                            <p className="text-sm font-medium text-gray-900 truncate">{visitor.currentPage}</p>
+                          </div>
+                          <div className="p-2 bg-white rounded-lg">
+                            <div className="flex items-center gap-2 text-gray-500 mb-1">
+                              <HiOutlineChevronRight className="w-4 h-4" />
+                              <span className="text-xs">Kaynak</span>
+                            </div>
+                            <p className="text-sm font-medium text-gray-900 truncate">{visitor.referrer || 'Doğrudan'}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-3 pt-3 border-t border-emerald-200">
+                          <p className="text-xs text-gray-500">
+                            Ekran: {visitor.screenWidth}x{visitor.screenHeight} • Dil: {visitor.language}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <HiOutlineEye className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-gray-500">Şu anda aktif ziyaretçi yok</p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {visitorHistory.length > 0 ? (
+                    visitorHistory.map((visitor, index) => (
+                      <motion.div
+                        key={visitor.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        className={`p-4 border rounded-xl ${
+                          visitor.isActive 
+                            ? 'bg-emerald-50 border-emerald-200' 
+                            : 'bg-gray-50 border-gray-200'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-2 rounded-lg ${visitor.isActive ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                              {getDeviceIcon(visitor.device)}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold text-gray-900">{visitor.device}</span>
+                                {visitor.isActive ? (
+                                  <span className="text-xs px-2 py-0.5 bg-emerald-500 text-white rounded-full">Aktif</span>
+                                ) : (
+                                  <span className="text-xs px-2 py-0.5 bg-gray-400 text-white rounded-full">Çıktı</span>
+                                )}
+                              </div>
+                              <p className="text-sm text-gray-600">{visitor.browser} • {visitor.os}</p>
+                            </div>
+                          </div>
+                          <div className="text-right text-xs text-gray-500">
+                            <p>Giriş: {formatFullDate(visitor.enteredAt)}</p>
+                            {visitor.exitedAt && <p>Çıkış: {formatFullDate(visitor.exitedAt)}</p>}
+                          </div>
+                        </div>
+                        
+                        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                          <span className="px-2 py-1 bg-white rounded border">{visitor.ip}</span>
+                          <span className="px-2 py-1 bg-white rounded border">{visitor.city}, {visitor.country}</span>
+                          <span className="px-2 py-1 bg-white rounded border">{visitor.currentPage}</span>
+                        </div>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <HiOutlineClock className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-gray-500">Son 24 saatte ziyaretçi kaydı yok</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }
