@@ -27,7 +27,7 @@ import {
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { getAllProducts, getAllCategories } from '@/lib/productService';
-import { subscribeToActiveVisitors, getVisitorHistory } from '@/lib/visitorService';
+import { subscribeToActiveVisitors, getVisitorHistory, forceCleanupAllVisitors, cleanupStaleVisitors } from '@/lib/visitorService';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -46,6 +46,7 @@ export default function AdminDashboard() {
   const [visitorHistory, setVisitorHistory] = useState([]);
   const [showVisitorModal, setShowVisitorModal] = useState(false);
   const [activeTab, setActiveTab] = useState('active');
+  const [isCleaningVisitors, setIsCleaningVisitors] = useState(false);
 
   useEffect(() => {
     const adminAuth = localStorage.getItem('admin_auth');
@@ -95,11 +96,17 @@ export default function AdminDashboard() {
       setActiveVisitors(visitors);
     });
 
+    // Cleanup stale visitors every 30 seconds
+    const cleanupInterval = setInterval(() => {
+      cleanupStaleVisitors();
+    }, 30000);
+
     return () => {
       unsubOrders();
       unsubCompleted();
       unsubIncomplete();
       unsubVisitors();
+      clearInterval(cleanupInterval);
     };
   }, [router]);
 
@@ -140,6 +147,20 @@ export default function AdminDashboard() {
       return <HiOutlineDeviceMobile className="w-4 h-4" />;
     }
     return <HiOutlineDesktopComputer className="w-4 h-4" />;
+  };
+
+  const handleCleanupVisitors = async () => {
+    setIsCleaningVisitors(true);
+    await cleanupStaleVisitors();
+    setIsCleaningVisitors(false);
+  };
+
+  const handleForceCleanupAll = async () => {
+    if (confirm('Tüm aktif ziyaretçileri silmek istediğinize emin misiniz?')) {
+      setIsCleaningVisitors(true);
+      await forceCleanupAllVisitors();
+      setIsCleaningVisitors(false);
+    }
   };
 
   const formatPrice = (price) => {
@@ -429,6 +450,24 @@ export default function AdminDashboard() {
                     Geçmiş (24 saat)
                   </div>
                 </button>
+                
+                {/* Cleanup Buttons */}
+                <div className="ml-auto flex gap-2">
+                  <button
+                    onClick={handleCleanupVisitors}
+                    disabled={isCleaningVisitors}
+                    className="px-3 py-2 bg-white/20 text-white hover:bg-white/30 rounded-lg font-medium transition-colors text-sm disabled:opacity-50"
+                  >
+                    {isCleaningVisitors ? '⏳ Temizleniyor...' : '🧹 Eski Olanları Temizle'}
+                  </button>
+                  <button
+                    onClick={handleForceCleanupAll}
+                    disabled={isCleaningVisitors}
+                    className="px-3 py-2 bg-red-500/80 text-white hover:bg-red-500 rounded-lg font-medium transition-colors text-sm disabled:opacity-50"
+                  >
+                    🗑️ Tümünü Sil
+                  </button>
+                </div>
               </div>
             </div>
 

@@ -11,7 +11,7 @@ import manisaLogo from '../assets/manisa.png';
 
 
 export default function Footer() {
-  const phoneNumber = '905551234567'; // WhatsApp numarası (başında 90 ile)
+  const phoneNumber = '905513545603'; // WhatsApp numarası (başında 90 ile)
   const whatsappUrl = `https://wa.me/${phoneNumber}`;
 
   const footerLinks = [
@@ -78,7 +78,7 @@ export default function Footer() {
         className="w-[80vw] -mt-3 max-w-ms flex items-center justify-center gap-3 px-2 py-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 group"
       >
         <FaWhatsapp className="w-6 h-6 group-hover:scale-110 transition-transform" />
-        <span className="text-md font-semibold tracking-wide">+90 555 123 45 67</span>
+        <span className="text-md font-semibold tracking-wide">+90 551 354 56 03</span>
       </a>
       
       {/* Working Hours */}

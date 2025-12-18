@@ -697,7 +697,7 @@ export default function CheckoutPage() {
                         value={formData.city}
                         onChange={handleInputChange}
                         className={inputClass}
-                        placeholder="İstanbul"
+                        placeholder="Manisa"
                       />
                     </div>
                     <div>

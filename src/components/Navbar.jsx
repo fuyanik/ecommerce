@@ -419,7 +419,7 @@ export default function Navbar() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Mağazamızı Ziyaret Edin</p>
-                    <p className="font-medium text-gray-900 text-sm">İstanbul, Türkiye</p>
+                    <p className="font-medium text-gray-900 text-sm">Manisa, Türkiye</p>
                   </div>
                 </div>
               </div>

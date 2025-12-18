@@ -84,13 +84,13 @@ export default function SupportPage() {
             Tüm sorularınız için WhatsApp üzerinden iletişime geçebilirsiniz
           </p>
           <a
-            href="https://wa.me/905551234567"
+            href="https://wa.me/905513545603"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 group"
           >
             <FaWhatsapp className="w-6 h-6 group-hover:scale-110 transition-transform" />
-            <span className="text-md font-semibold tracking-wide">+90 555 123 45 67</span>
+            <span className="text-md font-semibold tracking-wide">+90 551 354 56 03</span>
           </a>
         </div>
       </div>

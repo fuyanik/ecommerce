@@ -11,13 +11,17 @@ import {
   updateDoc,
   getDocs,
   where,
-  Timestamp
+  Timestamp,
+  getDoc
 } from 'firebase/firestore';
 import { db } from './firebase';
 
 // Collection reference
 const VISITORS_COLLECTION = 'active_visitors';
 const VISITOR_HISTORY_COLLECTION = 'visitor_history';
+
+// Stale timeout in minutes (visitors inactive for this long will be removed)
+const STALE_TIMEOUT_MINUTES = 2;
 
 // Generate unique visitor ID
 export const generateVisitorId = () => {
@@ -92,6 +96,17 @@ export const getLocationFromIP = async (ip) => {
   }
 };
 
+// Check if visitor is stale (no activity for STALE_TIMEOUT_MINUTES)
+const isVisitorStale = (lastActivity) => {
+  if (!lastActivity) return true;
+  
+  const lastActivityDate = lastActivity.toDate ? lastActivity.toDate() : new Date(lastActivity);
+  const staleThreshold = new Date();
+  staleThreshold.setMinutes(staleThreshold.getMinutes() - STALE_TIMEOUT_MINUTES);
+  
+  return lastActivityDate < staleThreshold;
+};
+
 // Register visitor as active
 export const registerVisitor = async (visitorId) => {
   try {
@@ -119,6 +134,9 @@ export const registerVisitor = async (visitorId) => {
       exitedAt: null
     });
     
+    // Clean up stale visitors whenever a new visitor registers
+    cleanupStaleVisitors();
+    
     return visitorData;
   } catch (error) {
     console.error('Ziyaretçi kaydedilemedi:', error);
@@ -130,12 +148,22 @@ export const registerVisitor = async (visitorId) => {
 export const updateVisitorActivity = async (visitorId, currentPage) => {
   try {
     const visitorRef = doc(db, VISITORS_COLLECTION, visitorId);
+    
+    // Check if document exists first
+    const docSnap = await getDoc(visitorRef);
+    if (!docSnap.exists()) {
+      // Re-register if document doesn't exist (was cleaned up)
+      return null;
+    }
+    
     await updateDoc(visitorRef, {
       currentPage,
       lastActivity: serverTimestamp()
     });
+    return true;
   } catch (error) {
     console.error('Ziyaretçi aktivitesi güncellenemedi:', error);
+    return null;
   }
 };
 
@@ -143,11 +171,15 @@ export const updateVisitorActivity = async (visitorId, currentPage) => {
 export const removeVisitor = async (visitorId) => {
   try {
     // Update history with exit time
-    const historyRef = doc(db, VISITOR_HISTORY_COLLECTION, visitorId);
-    await updateDoc(historyRef, {
-      exitedAt: serverTimestamp(),
-      isActive: false
-    });
+    try {
+      const historyRef = doc(db, VISITOR_HISTORY_COLLECTION, visitorId);
+      await updateDoc(historyRef, {
+        exitedAt: serverTimestamp(),
+        isActive: false
+      });
+    } catch (e) {
+      // History doc might not exist
+    }
     
     // Remove from active visitors
     await deleteDoc(doc(db, VISITORS_COLLECTION, visitorId));
@@ -156,18 +188,32 @@ export const removeVisitor = async (visitorId) => {
   }
 };
 
-// Listen to active visitors (real-time)
+// Listen to active visitors (real-time) - filters out stale visitors
 export const subscribeToActiveVisitors = (callback) => {
   const q = query(
     collection(db, VISITORS_COLLECTION),
-    orderBy('enteredAt', 'desc')
+    orderBy('lastActivity', 'desc')
   );
   
+  // Clean up stale visitors on subscription
+  cleanupStaleVisitors();
+  
   return onSnapshot(q, (snapshot) => {
-    const visitors = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    const now = new Date();
+    const staleThreshold = new Date(now.getTime() - STALE_TIMEOUT_MINUTES * 60 * 1000);
+    
+    const visitors = snapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+      .filter(visitor => {
+        // Filter out stale visitors client-side for immediate effect
+        if (!visitor.lastActivity) return false;
+        const lastActivityDate = visitor.lastActivity.toDate ? visitor.lastActivity.toDate() : new Date(visitor.lastActivity);
+        return lastActivityDate >= staleThreshold;
+      });
+    
     callback(visitors);
   });
 };
@@ -195,22 +241,75 @@ export const getVisitorHistory = async () => {
   }
 };
 
-// Clean up stale visitors (older than 5 minutes without activity)
+// Clean up stale visitors (older than STALE_TIMEOUT_MINUTES without activity)
 export const cleanupStaleVisitors = async () => {
   try {
-    const fiveMinutesAgo = new Date();
-    fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5);
+    const staleThreshold = new Date();
+    staleThreshold.setMinutes(staleThreshold.getMinutes() - STALE_TIMEOUT_MINUTES);
     
     const q = query(
       collection(db, VISITORS_COLLECTION),
-      where('lastActivity', '<', Timestamp.fromDate(fiveMinutesAgo))
+      where('lastActivity', '<', Timestamp.fromDate(staleThreshold))
     );
     
     const snapshot = await getDocs(q);
-    const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
-    await Promise.all(deletePromises);
+    
+    if (snapshot.docs.length > 0) {
+      console.log(`🧹 ${snapshot.docs.length} eski ziyaretçi temizleniyor...`);
+      
+      const promises = snapshot.docs.map(async (docSnap) => {
+        const visitorId = docSnap.id;
+        
+        // Update history
+        try {
+          const historyRef = doc(db, VISITOR_HISTORY_COLLECTION, visitorId);
+          await updateDoc(historyRef, {
+            exitedAt: serverTimestamp(),
+            isActive: false
+          });
+        } catch (e) {
+          // Ignore history errors
+        }
+        
+        // Delete from active
+        return deleteDoc(docSnap.ref);
+      });
+      
+      await Promise.all(promises);
+    }
   } catch (error) {
     console.error('Eski ziyaretçiler temizlenemedi:', error);
   }
 };
 
+// Force cleanup all visitors (admin function)
+export const forceCleanupAllVisitors = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, VISITORS_COLLECTION));
+    
+    const promises = snapshot.docs.map(async (docSnap) => {
+      const visitorId = docSnap.id;
+      
+      // Update history
+      try {
+        const historyRef = doc(db, VISITOR_HISTORY_COLLECTION, visitorId);
+        await updateDoc(historyRef, {
+          exitedAt: serverTimestamp(),
+          isActive: false
+        });
+      } catch (e) {
+        // Ignore history errors
+      }
+      
+      // Delete from active
+      return deleteDoc(docSnap.ref);
+    });
+    
+    await Promise.all(promises);
+    console.log(`🧹 Tüm ziyaretçiler temizlendi (${snapshot.docs.length})`);
+    return snapshot.docs.length;
+  } catch (error) {
+    console.error('Ziyaretçiler temizlenemedi:', error);
+    return 0;
+  }
+};
