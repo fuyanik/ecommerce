@@ -184,6 +184,7 @@ export default function CheckoutPage() {
   const [receiptFile, setReceiptFile] = useState(null);
   const [copied, setCopied] = useState('');
   const [showCardError, setShowCardError] = useState(false);
+  const [emailError, setEmailError] = useState('');
   const pageRef = useRef(null);
   
   const generatedOrderNumber = useMemo(() => {
@@ -263,9 +264,28 @@ export default function CheckoutPage() {
     }).format(price);
   };
 
+  const validateEmail = (email) => {
+    if (!email) return true; // Email is optional, so empty is valid
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear email error when user starts typing
+    if (name === 'email') {
+      setEmailError('');
+    }
+  };
+
+  const handleEmailBlur = () => {
+    if (formData.email && !validateEmail(formData.email)) {
+      setEmailError('Lütfen geçerli bir e-posta adresi girin (örn: ornek@email.com)');
+    } else {
+      setEmailError('');
+    }
   };
 
   const scrollToTop = () => {
@@ -289,7 +309,12 @@ export default function CheckoutPage() {
   };
 
   const handleNextStep = async () => {
+    // Validate email before proceeding from step 0
     if (currentStep === 0) {
+      if (formData.email && !validateEmail(formData.email)) {
+        setEmailError('Lütfen geçerli bir e-posta adresi girin (örn: ornek@email.com)');
+        return;
+      }
       await saveIncompleteUser();
     }
     setCurrentStep(prev => prev + 1);
@@ -414,7 +439,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const isStep1Valid = formData.firstName && formData.lastName && formData.phone;
+  const isStep1Valid = formData.firstName && formData.lastName && formData.phone && !emailError && (formData.email === '' || validateEmail(formData.email));
   const isStep2Valid = formData.address && formData.city && formData.district;
   const isStep3Valid = selectedCargo && paymentMethod;
 
@@ -639,16 +664,26 @@ export default function CheckoutPage() {
                   <div>
                     <label className="text-xs font-medium text-gray-700 mb-1 block">E-posta</label>
                     <div className="relative">
-                      <HiOutlineMail className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <HiOutlineMail className={`absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 ${emailError ? 'text-red-400' : 'text-gray-400'}`} />
                       <input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className={`${inputClass} pl-8`}
+                        onBlur={handleEmailBlur}
+                        className={`${inputClass} pl-8 ${emailError ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : ''}`}
                         placeholder="ornek@email.com"
                       />
                     </div>
+                    {emailError && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-xs text-red-500 mt-1 flex items-center gap-1"
+                      >
+                        <span>⚠️</span> {emailError}
+                      </motion.p>
+                    )}
                   </div>
                 </div>
               </div>
