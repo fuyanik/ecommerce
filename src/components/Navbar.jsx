@@ -25,6 +25,7 @@ import {
   HiOutlineShoppingCart,
   HiOutlineFire
 } from 'react-icons/hi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useProducts } from '@/context/ProductsContext';
@@ -40,7 +41,7 @@ function Logo() {
           {/* Background glow effect */}
         
           
-          <Image  src={logosaydam} alt="Logo" width={150} height={140} />
+          <Image  src={logosaydam} alt="Logo" width={120} height={140} />
       
         </div>
         
@@ -146,6 +147,17 @@ export default function Navbar() {
 
             {/* Right Icons */}
             <div className="flex items-center gap-1">
+              {/* WhatsApp Button */}
+              <a
+                href="https://wa.me/905513545603"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+              >
+                <FaWhatsapp className="w-5 h-5" />
+                <span className="text-xs font-xs whitespace-nowrap">7/24 Destek</span>
+              </a>
+
               {/* Search Button */}
               <button 
                 onClick={() => setIsSearchOpen(true)}
@@ -153,37 +165,6 @@ export default function Navbar() {
               >
                 <HiOutlineSearch className="w-5 h-5 text-gray-700" />
               </button>
-
-              {/* Cart */}
-              <Link 
-                href="/sepet"
-                className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-              >
-                <HiOutlineShoppingBag className="w-5 h-5 text-gray-700" />
-                {getCartCount() > 0 && (
-                  <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                    {getCartCount()}
-                  </span>
-                )}
-              </Link>
-
-              {/* User */}
-              <Link 
-                href={user ? '/hesabim' : '/giris'}
-                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-              >
-                {user?.photoURL ? (
-                  <Image
-                    src={user.photoURL}
-                    alt={user.displayName || 'User'}
-                    width={28}
-                    height={28}
-                    className="rounded-full"
-                  />
-                ) : (
-                  <HiOutlineUser className="w-5 h-5 text-gray-700" />
-                )}
-              </Link>
 
               {/* Mobile Menu */}
               <button 
