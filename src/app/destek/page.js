@@ -158,7 +158,7 @@ export default function SupportPage() {
             </div>
             <div>
               <p className="text-xs text-gray-500">Telefon</p>
-              <p className="font-medium text-gray-900">0850 123 45 67</p>
+              <p className="font-medium text-gray-900">+90 551 354 56 03</p>
             </div>
           </a>
           <a href="mailto:destek@mobilya.com" className="flex-1 p-4 bg-white border border-gray-100 rounded-2xl flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
