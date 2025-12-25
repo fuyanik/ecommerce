@@ -235,8 +235,8 @@ export default function HomePage() {
           </div>
         </section>
       )}
-      <Image src={main1} alt="yilsonu" className='w-full h-[17vh] object-contain' />
-      <Image src={main2} alt="yilsonu" className='w-full h-[8vh] object-contain' />
+      <Image unoptimized src={main1} alt="yilsonu" className='w-full h-[17vh] object-contain' />
+      <Image unoptimized src={main2} alt="yilsonu" className='w-full h-[8vh] object-contain' />
 
       {/* Yazıcı Modelleri - Okul Alışverişi */}
       {schoolShoppingProducts.length > 0 && (
@@ -362,7 +362,7 @@ export default function HomePage() {
       )}
 
        <div className='w-full h-[50vh] rounded-lg overflow-hidden flex items-center px-3'> 
-        <Image className='w-full  object-contain rounded-lg' src={main4} alt="yilsonu"  />
+        <Image unoptimized className='w-full  object-contain rounded-lg' src={main4} alt="yilsonu"  />
         
         </div> 
 
