@@ -37,8 +37,8 @@ function Logo() {
     <Link href="/" className="flex items-center mt-3 mr-2  group">
      
         <div className="relative overflow-hidden">
-          {/* Background glow effect */}
           
+          {/* Background glow effect */}
           <Image 
             src="/logo3.png" 
             alt="Logo" 

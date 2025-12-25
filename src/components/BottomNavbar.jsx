@@ -176,7 +176,9 @@ export default function BottomNavbar({ force = false }) {
               className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-white " >
               <div className="w-full h-full rounded-xl overflow-hidden bg-white">
                 <Image
-                  src={logo}
+                  width={100}
+                  height={100}
+                  src="/bottomNavbarLogo3.png"
                   alt="logo"
                   className="object-cover w-full h-full"
                 />

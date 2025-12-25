@@ -14,7 +14,6 @@ import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
 import { useProducts } from '@/context/ProductsContext';
 import yilsonu from '@/assets/yilsonu.png';
-import hp from '@/assets/hp.png';
 import main1 from '@/assets/main1.png';
 import main2 from '@/assets/main2.png';
 import main3 from '@/assets/main3.png';
@@ -55,7 +54,7 @@ function HPAuthorizedBanner() {
     <div className="fixed top-[46px] left-0 right-0 z-50 bg-[rgb(219,250,124)] h-[32px] px-4 overflow-hidden flex items-center">
       <div className="max-w-7xl gap-2 mx-auto flex items-center justify-center text-black text-xs sm:text-sm">
        
-          <Image src={hp} alt="HP Yetkili Satıcısı" width={20} height={20} />
+          <Image src="/hp.png" alt="HP Yetkili Satıcısı" width={20} height={20} />
           <span className="font-semibold tracking-wide">
             HP Yetkili Satıcısı
           </span>
