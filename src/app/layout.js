@@ -15,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Çizgi Ticaret - Online Alışveriş",
-  description: "Teknoloji, ev eşyaları, mobilya, bebek ürünleri ve daha fazlası. Güvenli ve hızlı alışveriş.",
+  title: "Ofis Sepeti - Online Alışveriş",
+  description: "Ofis Sepeti, yazıcı, bilgisayar, mobilya, ve daha fazlası. Güvenli ve hızlı alışveriş.",
 };
 
 export const viewport = {
@@ -60,7 +60,7 @@ export default function RootLayout({ children }) {
           <a href="https://www.livechat.com/chat-with/19417837/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a>
         </noscript>
 
-        {/* Hotjar Tracking Code for Çizgi Ticaret */}
+        {/* Hotjar Tracking Code for Ofis Sepeti */}
         <Script id="hotjar-script" strategy="afterInteractive">
           {`
             (function(h,o,t,j,a,r){

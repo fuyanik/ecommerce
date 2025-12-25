@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
               <HiOutlineLockClosed className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
-            <p className="text-gray-500 mt-2">Çizgi Ticaret Yönetim</p>
+            <p className="text-gray-500 mt-2">Ofis Sepeti Yönetim</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
