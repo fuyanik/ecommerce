@@ -181,6 +181,8 @@ export default function BottomNavbar({ force = false }) {
                   src="/bottomNavbarLogo3.png"
                   alt="logo"
                   className="object-cover w-full h-full"
+                  priority
+                  unoptimized
                 />
               </div>
             </motion.div>
