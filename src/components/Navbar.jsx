@@ -448,6 +448,7 @@ function MobileCategories({ onClose }) {
                   alt={category.name}
                   fill
                   className="object-cover"
+                  unoptimized
                 />
               ) : (
                 <span className="text-2xl flex items-center justify-center h-full">{category.icon}</span>

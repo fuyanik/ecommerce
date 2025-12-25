@@ -63,6 +63,7 @@ export default function ProductCard({ product, index = 0 }) {
               fill
               className="object-contain md:group-hover:scale-105 transition-transform duration-500 p-2"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              unoptimized
             />
             
             {/* Wishlist Button */}

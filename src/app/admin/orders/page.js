@@ -229,7 +229,7 @@ export default function AdminOrdersPage() {
                   <div className="w-[100px] hidden md:flex gap-1">
                     {order.items?.slice(0, 3).map((item, i) => (
                       <div key={i} className="relative w-7 h-7 rounded-md overflow-hidden bg-gray-100">
-                        <Image src={item.image} alt={item.name} fill className="object-cover" />
+                        <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
                       </div>
                     ))}
                     {order.items?.length > 3 && (
@@ -430,7 +430,7 @@ export default function AdminOrdersPage() {
                       {selectedOrder.items?.map((item, index) => (
                         <div key={index} className="flex gap-3">
                           <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-white">
-                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                            <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
                           </div>
                           <div className="flex-1">
                             <p className="text-sm font-medium text-gray-900">{item.name}</p>

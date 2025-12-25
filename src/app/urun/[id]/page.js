@@ -189,12 +189,13 @@ export default function ProductPage({ params }) {
                   className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl mb-4"
                 >
                   <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-white flex-shrink-0">
-                    <Image
-                      src={product.images?.[0] || '/placeholder.png'}
-                      alt={product.name}
-                      fill
-                      className="object-contain p-1"
-                    />
+                <Image
+                  src={product.images?.[0] || '/placeholder.png'}
+                  alt={product.name}
+                  fill
+                  className="object-contain p-1"
+                  unoptimized
+                />
                   </div>
                   <div className="flex-1 text-left">
                     <p className="font-medium text-gray-900 text-sm line-clamp-1">{product.name}</p>
@@ -281,6 +282,7 @@ export default function ProductPage({ params }) {
                   fill
                   className="object-contain"
                   priority={index === 0}
+                  unoptimized
                 />
               </div>
             </SwiperSlide>
