@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from "../assets/bottomNavbarLogo2.png";
+import logo from "../assets/bottomNavbarLogo3.png";
 import { 
   HiOutlineShoppingCart, 
   HiShoppingCart,
@@ -173,14 +173,13 @@ export default function BottomNavbar({ force = false }) {
           >
             <motion.div
               whileTap={{ scale: 0.9 }}
-              className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-white p-0.5"
+              className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-white "
             >
               <div className="w-full h-full rounded-xl overflow-hidden bg-white">
                 <Image
                   src={logo}
-                  alt="Mobilya"
-                  width={64}
-                  height={64}
+                  alt="logo"
+                 
                   className="object-cover w-full h-full"
                 />
               </div>
