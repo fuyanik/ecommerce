@@ -71,31 +71,55 @@ export function ProductsProvider({ children }) {
 
   // Öne çıkan ürünleri getir (featured veya homepageSections'da 'featured' olanlar)
   const getFeaturedProducts = () => {
-    return products.filter(p => 
+    const featured = products.filter(p => 
       p.featured === true || 
       (p.homepageSections && p.homepageSections.includes('featured'))
     );
+    // Sıralamaya göre sırala
+    return featured.sort((a, b) => {
+      const orderA = a.homepageSectionOrder?.['featured'] ?? 999;
+      const orderB = b.homepageSectionOrder?.['featured'] ?? 999;
+      return orderA - orderB;
+    });
   };
 
   // Okul alışverişi ürünlerini getir
   const getSchoolShoppingProducts = () => {
-    return products.filter(p => 
+    const school = products.filter(p => 
       p.homepageSections && p.homepageSections.includes('school')
     );
+    // Sıralamaya göre sırala
+    return school.sort((a, b) => {
+      const orderA = a.homepageSectionOrder?.['school'] ?? 999;
+      const orderB = b.homepageSectionOrder?.['school'] ?? 999;
+      return orderA - orderB;
+    });
   };
 
   // En çok favorilenen ürünleri getir
   const getMostFavoritedProducts = () => {
-    return products.filter(p => 
+    const favorites = products.filter(p => 
       p.homepageSections && p.homepageSections.includes('favorites')
     );
+    // Sıralamaya göre sırala
+    return favorites.sort((a, b) => {
+      const orderA = a.homepageSectionOrder?.['favorites'] ?? 999;
+      const orderB = b.homepageSectionOrder?.['favorites'] ?? 999;
+      return orderA - orderB;
+    });
   };
 
   // Sizin için seçtiklerimiz ürünlerini getir
   const getSelectedForYouProducts = () => {
-    return products.filter(p => 
+    const selected = products.filter(p => 
       p.homepageSections && p.homepageSections.includes('selected')
     );
+    // Sıralamaya göre sırala
+    return selected.sort((a, b) => {
+      const orderA = a.homepageSectionOrder?.['selected'] ?? 999;
+      const orderB = b.homepageSectionOrder?.['selected'] ?? 999;
+      return orderA - orderB;
+    });
   };
 
   // Belirli bir bölümdeki ürünleri getir

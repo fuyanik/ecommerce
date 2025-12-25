@@ -9,7 +9,7 @@ import { Autoplay, Pagination, FreeMode } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/free-mode';
-import { HiOutlineChevronRight, HiOutlineChevronLeft, HiOutlineTruck, HiOutlineShieldCheck, HiOutlineCreditCard, HiOutlineSupport, HiOutlineFire, HiOutlineUserGroup, HiOutlineEye, HiOutlineAcademicCap, HiOutlineHeart, HiOutlineSparkles } from 'react-icons/hi';
+import { HiOutlineChevronRight, HiOutlineChevronLeft, HiOutlineTruck, HiOutlineShieldCheck, HiOutlineCreditCard, HiOutlineSupport, HiOutlineFire, HiOutlineUserGroup, HiOutlineEye, HiOutlineAcademicCap, HiOutlineHeart, HiOutlineSparkles, HiOutlinePrinter } from 'react-icons/hi';
 import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
 import { useProducts } from '@/context/ProductsContext';
@@ -240,7 +240,7 @@ export default function HomePage() {
             <div className="flex items-center justify-between mb-6 px-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                  <HiOutlineAcademicCap className="w-5 h-5 text-white" />
+                  <HiOutlinePrinter className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-gray-900">Yazıcı Modelleri</h2>

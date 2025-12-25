@@ -34,6 +34,7 @@ export default function HomepageSectionsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [draggedProduct, setDraggedProduct] = useState(null);
 
   useEffect(() => {
     const adminAuth = localStorage.getItem('admin_auth');
@@ -57,7 +58,13 @@ export default function HomepageSectionsPage() {
   };
 
   const getSectionProducts = (sectionId) => {
-    return products.filter(p => p.homepageSections && p.homepageSections.includes(sectionId));
+    const sectionProducts = products.filter(p => p.homepageSections && p.homepageSections.includes(sectionId));
+    // Sıralamaya göre sırala
+    return sectionProducts.sort((a, b) => {
+      const orderA = a.homepageSectionOrder?.[sectionId] ?? 999;
+      const orderB = b.homepageSectionOrder?.[sectionId] ?? 999;
+      return orderA - orderB;
+    });
   };
 
   const getAvailableProducts = () => {
@@ -77,15 +84,27 @@ export default function HomepageSectionsPage() {
 
       const currentSections = product.homepageSections || [];
       const newSections = [...currentSections, activeSection];
+      
+      // Yeni ürün için sıra numarası belirle (en sona ekle)
+      const sectionProducts = getSectionProducts(activeSection);
+      const maxOrder = sectionProducts.length > 0 
+        ? Math.max(...sectionProducts.map(p => p.homepageSectionOrder?.[activeSection] ?? 0))
+        : -1;
+      
+      const newOrder = {
+        ...(product.homepageSectionOrder || {}),
+        [activeSection]: maxOrder + 1
+      };
 
       await updateProduct(productId, {
         ...product,
-        homepageSections: newSections
+        homepageSections: newSections,
+        homepageSectionOrder: newOrder
       });
 
       setProducts(prev => prev.map(p => 
         p.id === productId 
-          ? { ...p, homepageSections: newSections }
+          ? { ...p, homepageSections: newSections, homepageSectionOrder: newOrder }
           : p
       ));
     } catch (err) {
@@ -103,20 +122,94 @@ export default function HomepageSectionsPage() {
       if (!product) return;
 
       const newSections = (product.homepageSections || []).filter(s => s !== activeSection);
+      const newOrder = { ...(product.homepageSectionOrder || {}) };
+      delete newOrder[activeSection];
 
       await updateProduct(productId, {
         ...product,
-        homepageSections: newSections
+        homepageSections: newSections,
+        homepageSectionOrder: newOrder
       });
 
       setProducts(prev => prev.map(p => 
         p.id === productId 
-          ? { ...p, homepageSections: newSections }
+          ? { ...p, homepageSections: newSections, homepageSectionOrder: newOrder }
           : p
       ));
     } catch (err) {
       console.error('Error removing product from section:', err);
       alert('Ürün kaldırılırken hata oluştu');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDragStart = (e, productId) => {
+    setDraggedProduct(productId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', productId);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = async (e, targetProductId) => {
+    e.preventDefault();
+    if (!draggedProduct || draggedProduct === targetProductId) {
+      setDraggedProduct(null);
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const sectionProducts = getSectionProducts(activeSection);
+      const draggedIndex = sectionProducts.findIndex(p => p.id === draggedProduct);
+      const targetIndex = sectionProducts.findIndex(p => p.id === targetProductId);
+
+      if (draggedIndex === -1 || targetIndex === -1) {
+        setDraggedProduct(null);
+        setIsSaving(false);
+        return;
+      }
+
+      // Yeni sıralamayı hesapla
+      const newOrderedProducts = [...sectionProducts];
+      const [removed] = newOrderedProducts.splice(draggedIndex, 1);
+      newOrderedProducts.splice(targetIndex, 0, removed);
+
+      // Tüm ürünlerin sırasını güncelle
+      const updatePromises = newOrderedProducts.map((product, index) => {
+        const newOrder = {
+          ...(product.homepageSectionOrder || {}),
+          [activeSection]: index
+        };
+        return updateProduct(product.id, {
+          ...product,
+          homepageSectionOrder: newOrder
+        });
+      });
+
+      await Promise.all(updatePromises);
+
+      // State'i güncelle
+      setProducts(prev => prev.map(product => {
+        const updatedProduct = newOrderedProducts.find(p => p.id === product.id);
+        if (updatedProduct) {
+          const newOrder = {
+            ...(product.homepageSectionOrder || {}),
+            [activeSection]: newOrderedProducts.indexOf(updatedProduct)
+          };
+          return { ...product, homepageSectionOrder: newOrder };
+        }
+        return product;
+      }));
+
+      setDraggedProduct(null);
+    } catch (err) {
+      console.error('Error reordering products:', err);
+      alert('Sıralama güncellenirken hata oluştu');
     } finally {
       setIsSaving(false);
     }
@@ -201,6 +294,11 @@ export default function HomepageSectionsPage() {
                   Ürün Ekle
                 </button>
               </div>
+              {sectionProducts.length > 0 && (
+                <p className="text-white/70 text-xs mt-3 flex items-center gap-1">
+                  💡 Ürünleri sürükleyip bırakarak sıralayabilirsiniz
+                </p>
+              )}
             </div>
 
             {/* Products Grid */}
@@ -221,14 +319,20 @@ export default function HomepageSectionsPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {sectionProducts.map((product) => (
+                  {sectionProducts.map((product, index) => (
                     <motion.div
                       key={product.id}
                       layout
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="bg-gray-50 rounded-xl overflow-hidden group relative"
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, product.id)}
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, product.id)}
+                      className={`bg-gray-50 rounded-xl overflow-hidden group relative cursor-move transition-all ${
+                        draggedProduct === product.id ? 'opacity-50 scale-95' : 'hover:shadow-lg'
+                      }`}
                     >
                       <div className="aspect-square relative">
                         <Image
@@ -237,10 +341,13 @@ export default function HomepageSectionsPage() {
                           fill
                           className="object-cover"
                         />
+                        <div className="absolute top-2 left-2 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                          {index + 1}
+                        </div>
                         <button
                           onClick={() => removeProductFromSection(product.id)}
                           disabled={isSaving}
-                          className="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                          className="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-10"
                         >
                           <HiOutlineTrash className="w-4 h-4" />
                         </button>
