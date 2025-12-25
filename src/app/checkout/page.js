@@ -28,6 +28,18 @@ import { useCart } from '@/context/CartContext';
 
 const steps = ['Bilgiler', 'Adres', 'Ödeme', 'Tamamla'];
 
+const turkishCities = [
+  'Adana', 'Adıyaman', 'Afyonkarahisar', 'Ağrı', 'Amasya', 'Ankara', 'Antalya', 'Artvin',
+  'Aydın', 'Balıkesir', 'Bilecik', 'Bingöl', 'Bitlis', 'Bolu', 'Burdur', 'Bursa',
+  'Çanakkale', 'Çankırı', 'Çorum', 'Denizli', 'Diyarbakır', 'Edirne', 'Elazığ', 'Erzincan',
+  'Erzurum', 'Eskişehir', 'Gaziantep', 'Giresun', 'Gümüşhane', 'Hakkâri', 'Hatay', 'Isparta',
+  'İstanbul', 'İzmir', 'Kars', 'Kastamonu', 'Kayseri', 'Kırklareli', 'Kırşehir', 'Kocaeli',
+  'Konya', 'Kütahya', 'Malatya', 'Manisa', 'Mardin', 'Mersin', 'Muğla', 'Muş',
+  'Nevşehir', 'Niğde', 'Ordu', 'Osmaniye', 'Rize', 'Sakarya', 'Samsun', 'Siirt',
+  'Sinop', 'Sivas', 'Şanlıurfa', 'Şırnak', 'Tekirdağ', 'Tokat', 'Trabzon', 'Tunceli',
+  'Uşak', 'Van', 'Yalova', 'Yozgat', 'Zonguldak'
+];
+
 const cargoCompanies = [
   { id: 'yurtici', name: 'Yurtiçi Kargo', logo: '/assets/memleket.png', scale: 'scale-125' },
   { id: 'aras', name: 'Aras Kargo', logo: '/assets/araskargo.png', scale: 'scale-125' },
@@ -145,6 +157,10 @@ function OrderSummary({ cart, formatPrice, getCartTotal, paymentMethod, showExpa
                 alt={item.name}
                 fill
                 className="object-contain p-1"
+                unoptimized
+                priority
+                loader={({ src }) => src}
+                onError={(e) => { e.target.src = '/placeholder.png'; }}
               />
             </div>
             <div className="flex-1 min-w-0">
@@ -185,6 +201,8 @@ export default function CheckoutPage() {
   const [copied, setCopied] = useState('');
   const [showCardError, setShowCardError] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [districts, setDistricts] = useState([]);
+  const [loadingDistricts, setLoadingDistricts] = useState(false);
   const pageRef = useRef(null);
   
   const generatedOrderNumber = useMemo(() => {
@@ -204,8 +222,8 @@ export default function CheckoutPage() {
   });
 
   const [paymentSettings, setPaymentSettings] = useState({
-    iban: 'TR12 3456 7890 1234 5678 9012 34',
-    accountHolder: '1001 ÇARŞI TİCARET A.Ş.',
+    iban: '',
+    accountHolder: '',
     bankName: ''
   });
 
@@ -270,6 +288,51 @@ export default function CheckoutPage() {
     return emailRegex.test(email);
   };
 
+  // Fetch districts when city is selected
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      if (!formData.city) {
+        setDistricts([]);
+        setFormData(prev => ({ ...prev, district: '' }));
+        return;
+      }
+
+      setLoadingDistricts(true);
+      try {
+        // Fetch all provinces - each province already contains districts array
+        const provincesResponse = await fetch('https://turkiyeapi.dev/api/v1/provinces');
+        
+        if (!provincesResponse.ok) {
+          throw new Error('Provinces API failed');
+        }
+        
+        const provincesData = await provincesResponse.json();
+        
+        // Find the selected city - districts are already in the province object
+        const selectedProvince = provincesData.data?.find(
+          (province) => province.name === formData.city
+        );
+
+        if (selectedProvince && selectedProvince.districts && Array.isArray(selectedProvince.districts)) {
+          const districtNames = selectedProvince.districts
+            .map((district) => district.name)
+            .filter(Boolean)
+            .sort();
+          setDistricts(districtNames);
+        } else {
+          setDistricts([]);
+        }
+      } catch (error) {
+        console.error('Error fetching districts:', error);
+        setDistricts([]);
+      } finally {
+        setLoadingDistricts(false);
+      }
+    };
+
+    fetchDistricts();
+  }, [formData.city]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -277,6 +340,11 @@ export default function CheckoutPage() {
     // Clear email error when user starts typing
     if (name === 'email') {
       setEmailError('');
+    }
+    
+    // Reset district when city changes
+    if (name === 'city') {
+      setFormData(prev => ({ ...prev, district: '' }));
     }
   };
 
@@ -383,6 +451,9 @@ export default function CheckoutPage() {
       
       if (paymentMethod === 'eft') {
         setCurrentStep(3);
+        setTimeout(() => {
+          scrollToTop();
+        }, 100);
       } else {
       setOrderComplete(true);
       clearCart();
@@ -476,7 +547,7 @@ export default function CheckoutPage() {
   const inputClass = "w-full h-11 px-3 bg-white border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-slate-800 focus:ring-2 focus:ring-indigo-900/20 transition-all text-sm";
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-gray-50 pb-24 pt-[2vh]">
+    <div ref={pageRef} className="min-h-screen bg-gray-50 pb-24">
       {/* Credit Card Error Popup */}
       <AnimatePresence>
         {showCardError && (
@@ -526,11 +597,38 @@ export default function CheckoutPage() {
         )}
       </AnimatePresence>
 
-      {/* Checkout Info Banner */}
+      {/* Progress Steps - 4 Steps with more spacing - Fixed below Navbar */}
+      <div className="fixed top-[8vh] left-0 right-0 z-40 bg-white px-4 py-3 border-b border-gray-100">
+        <div className="flex items-center justify-center max-w-lg mx-auto">
+          {steps.map((step, index) => (
+            <div key={step} className="flex items-center">
+              <div className="flex flex-col items-center">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
+                  index <= currentStep 
+                    ? 'bg-gradient-to-r from-gray-900 to-indigo-900 text-white' 
+                    : 'bg-gray-200 text-gray-400'
+                }`}>
+                  {index < currentStep ? <HiCheck className="w-4 h-4" /> : index + 1}
+                </div>
+                <span className={`text-[10px] mt-0.5 ${index <= currentStep ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
+                  {step}
+                </span>
+              </div>
+              {index < steps.length - 1 && (
+                <div className={`w-12 sm:w-16 h-0.5 mx-2 sm:mx-3 self-start mt-3.5 ${
+                  index < currentStep ? 'bg-gradient-to-r from-gray-900 to-indigo-900' : 'bg-gray-200'
+                }`} />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Checkout Info Banner - Fixed below Stepper */}
       <motion.div
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="fixed top-[60px] left-0 right-0 z-40 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white h-[45px] px-3 relative overflow-hidden flex items-center justify-center"
+        className="fixed top-[17vh] left-0 right-0 z-40 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white h-[45px] px-3 overflow-hidden flex items-center justify-center"
       >
         {/* Animated background shine */}
         <motion.div
@@ -575,35 +673,8 @@ export default function CheckoutPage() {
         </div>
       </motion.div>
 
-      {/* Progress Steps - 4 Steps with more spacing */}
-      <div className="bg-white px-4 py-3 border-b border-gray-100">
-        <div className="flex items-center justify-center max-w-lg mx-auto">
-          {steps.map((step, index) => (
-            <div key={step} className="flex items-center">
-              <div className="flex flex-col items-center">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
-                  index <= currentStep 
-                    ? 'bg-gradient-to-r from-gray-900 to-indigo-900 text-white' 
-                    : 'bg-gray-200 text-gray-400'
-                }`}>
-                  {index < currentStep ? <HiCheck className="w-4 h-4" /> : index + 1}
-                </div>
-                <span className={`text-[10px] mt-0.5 ${index <= currentStep ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
-                  {step}
-                </span>
-              </div>
-              {index < steps.length - 1 && (
-                <div className={`w-12 sm:w-16 h-0.5 mx-2 sm:mx-3 self-start mt-3.5 ${
-                  index < currentStep ? 'bg-gradient-to-r from-gray-900 to-indigo-900' : 'bg-gray-200'
-                }`} />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Form Steps */}
-      <div className="px-3 py-4 max-w-lg mx-auto">
+      <div className="px-3 py-4 max-w-lg mx-auto pt-[16vh]">
         <AnimatePresence mode="wait">
           {/* Step 1: Personal Info */}
           {currentStep === 0 && (
@@ -655,9 +726,12 @@ export default function CheckoutPage() {
                         type="tel"
                         name="phone"
                         value={formData.phone}
-                        onChange={handleInputChange}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          setFormData(prev => ({ ...prev, phone: value }));
+                        }}
                         className={`${inputClass} pl-8`}
-                        placeholder="05XX XXX XX XX"
+                        placeholder="Telefon"
                       />
                     </div>
                   </div>
@@ -726,25 +800,46 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="text-xs font-medium text-gray-700 mb-1 block">İl *</label>
-                      <input
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        className={inputClass}
-                        placeholder="Manisa"
-                      />
+                      <div className="relative">
+                        <select
+                          name="city"
+                          value={formData.city}
+                          onChange={handleInputChange}
+                          className={`${inputClass} appearance-none pr-10 cursor-pointer`}
+                        >
+                          <option value="">İl seçin</option>
+                          {turkishCities.map((city) => (
+                            <option key={city} value={city}>
+                              {city}
+                            </option>
+                          ))}
+                        </select>
+                        <HiOutlineChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      </div>
                     </div>
                     <div>
                       <label className="text-xs font-medium text-gray-700 mb-1 block">İlçe *</label>
-                      <input
-                        type="text"
-                        name="district"
-                        value={formData.district}
-                        onChange={handleInputChange}
-                        className={inputClass}
-                        placeholder="Kadıköy"
-                      />
+                      <div className="relative">
+                        <select
+                          name="district"
+                          value={formData.district}
+                          onChange={handleInputChange}
+                          disabled={!formData.city || loadingDistricts}
+                          className={`${inputClass} appearance-none pr-10 cursor-pointer ${
+                            !formData.city || loadingDistricts ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
+                        >
+                          <option value="">
+                            {loadingDistricts ? 'Yükleniyor...' : !formData.city ? 'Önce il seçin' : 'İlçe seçin'}
+                          </option>
+                          {districts.map((district) => (
+                            <option key={district} value={district}>
+                              {district}
+                            </option>
+                          ))}
+                        </select>
+                        <HiOutlineChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      </div>
                     </div>
                   </div>
                   <div>
@@ -809,6 +904,10 @@ export default function CheckoutPage() {
                         alt={cargo.name}
                         fill
                         className={`object-contain ${cargo.scale}`}
+                        unoptimized
+                        priority
+                        loader={({ src }) => src}
+                        onError={(e) => { e.target.src = '/placeholder.png'; }}
                       />
                     </button>
                   ))}

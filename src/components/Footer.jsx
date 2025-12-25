@@ -67,7 +67,7 @@ export default function Footer() {
 
       {/* Main Footer Content */}
       <div className='w-full flex flex-col items-center pt-6 pb-10 px-4'>
-      <Image src={logosaydam} alt="Logo" width={180} height={190} />
+      <Image src="/logo3.png" alt="Logo" width={180} height={190} />
       <p className='text-gray-500 -mt-8 text-sm mb-6'>Müşteri Hizmetleri | Çağrı Hattı</p>
       
       {/* WhatsApp Button */}
@@ -97,7 +97,7 @@ export default function Footer() {
          <p className='text-center text-[13px] text-gray-500 mt-4'>Ofis Sepeti, kullanıcı güvenliğini temel ilke olarak benimser. Hem teknik altyapımızı hem de veri koruma sistemlerimizi düzenli olarak güncelleyerek güvenli alışveriş ortamını daima en üst seviyede tutarız. Amacımız; müşterilerimize hızlı, modern, şeffaf ve güven veren bir alışveriş deneyimi sunmak, satın aldığınız her ürünü sorunsuz şekilde size ulaştırmaktır.</p>
          <p className='text-center text-[13px] text-gray-500 mt-4'>Ofis Sepeti olarak, güvenli alışverişin standartlarını yükseltmeye ve kullanıcılarımıza her zaman konforlu bir deneyim sunmaya devam ediyoruz.</p>
   
-  <div className='w-full mt-4 text-xs bg-black text-white p-3 rounded-md text-center'> ©2014-2025  ÇİZGİ TİCARET "Ofis Sepeti Limited Şirketi" KURULUŞUDUR.</div>
+  <div className='w-full mt-4 text-xs bg-black text-white p-3 rounded-md text-center'> ©2014-2025  OFİS SEPETİ "Ofis Sepeti Limited Şirketi" KURULUŞUDUR.</div>
       </div>
     </footer>
   );
