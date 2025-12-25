@@ -173,13 +173,11 @@ export default function BottomNavbar({ force = false }) {
           >
             <motion.div
               whileTap={{ scale: 0.9 }}
-              className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-white "
-            >
+              className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-white " >
               <div className="w-full h-full rounded-xl overflow-hidden bg-white">
                 <Image
                   src={logo}
                   alt="logo"
-                 
                   className="object-cover w-full h-full"
                 />
               </div>

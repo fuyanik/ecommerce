@@ -30,7 +30,6 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useProducts } from '@/context/ProductsContext';
 import PromoBanner from './PromoBanner';
-import logosaydam from '../assets/logo3.png';
 
 // Animated Logo Component with shine effect
 function Logo() {
@@ -39,9 +38,15 @@ function Logo() {
      
         <div className="relative overflow-hidden">
           {/* Background glow effect */}
-        
           
-          <Image  src={logosaydam} alt="Logo" width={140} height={140} />
+          <Image 
+            src="/logo3.png" 
+            alt="Logo" 
+            width={140} 
+            height={140}
+            priority
+            unoptimized
+          />
       
         </div>
         
