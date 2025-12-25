@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ProductsProvider } from "@/context/ProductsContext";
 import Navbar from "@/components/Navbar";
 import BottomNavbar from "@/components/BottomNavbar";
+import HPAuthorizedBanner from "@/components/HPAuthorizedBanner";
 import VisitorTracker from "@/components/VisitorTracker";
 
 const inter = Inter({
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
               <WishlistProvider>
                 <VisitorTracker />
                 <Navbar />
+                <HPAuthorizedBanner />
                 <main className="min-h-screen">
                   {children}
                 </main>

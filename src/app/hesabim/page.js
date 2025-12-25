@@ -38,14 +38,14 @@ export default function AccountPage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-[105px]">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-[138px]">
         <div className="animate-pulse text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-8 pt-[105px]">
+    <div className="min-h-screen bg-gray-50 pb-8 pt-[138px]">
       {/* Header */}
       <div className="bg-white px-4 py-8 text-center border-b border-gray-100">
         <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden bg-gray-100 shadow-sm">

@@ -49,28 +49,6 @@ const features = [
   { icon: HiOutlineSupport, title: '7/24 Destek', description: 'Her zaman yanınızda' },
 ];
 
-function HPAuthorizedBanner() {
-  return (
-    <div className="fixed top-[46px] left-0 right-0 z-50 bg-[rgb(219,250,124)] h-[32px] px-4 overflow-hidden flex items-center">
-      <div className="max-w-7xl gap-2 mx-auto flex items-center justify-center text-black text-xs sm:text-sm">
-       
-          <Image 
-            src="/hp.png" 
-            alt="HP Yetkili Satıcısı" 
-            width={20} 
-            height={20}
-            priority
-            unoptimized
-          />
-          <span className="font-semibold tracking-wide">
-            HP Yetkili Satıcısı
-          </span>
-        
-        
-      </div>
-    </div>
-  );
-}
 
 export default function HomePage() {
   const { 
@@ -92,7 +70,7 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-[105px]">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-[138px]">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-500 font-medium">Yükleniyor...</p>
@@ -102,10 +80,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pt-[11vh]">
-      {/* HP Yetkili Satıcısı Banner */}
-      <HPAuthorizedBanner />
-
+    <div className="bg-gray-50 min-h-screen pt-[138px]">
       {/* Hero Slider - Ofis Teması */}
       <section className="relative overflow-hidden">
         <Swiper

@@ -235,7 +235,7 @@ export default function ProductPage({ params }) {
       </AnimatePresence>
 
       {/* Breadcrumb Navigation */}
-      <div className="pt-[62px] bg-white border-b border-gray-100">
+      <div className="pt-[138px] bg-white border-b border-gray-100">
         <div className="px-4 py-2">
           <nav className="flex items-center gap-1 text-xs text-gray-500 overflow-x-auto hide-scrollbar">
             <Link href="/" className="flex items-center gap-1 hover:text-gray-900 transition-colors whitespace-nowrap">

@@ -61,7 +61,7 @@ export default function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center bg-gray-50 pt-[105px]">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center bg-gray-50 pt-[138px]">
         <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6">
           <HiOutlineShoppingCart className="w-12 h-12 text-gray-400" />
         </div>
@@ -80,7 +80,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-40 pt-[105px]">
+    <div className="min-h-screen bg-gray-50 pb-40 pt-[138px]">
       {/* Countdown Banner */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

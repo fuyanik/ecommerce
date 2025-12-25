@@ -26,14 +26,14 @@ export default function LoginPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-[105px]">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-[138px]">
         <div className="animate-pulse text-gray-500">Yükleniyor...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gray-50 pt-[105px]">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gray-50 pt-[138px]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

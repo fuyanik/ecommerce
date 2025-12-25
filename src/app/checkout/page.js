@@ -476,7 +476,7 @@ export default function CheckoutPage() {
   const inputClass = "w-full h-11 px-3 bg-white border border-gray-200 rounded-xl text-gray-900 outline-none focus:border-slate-800 focus:ring-2 focus:ring-indigo-900/20 transition-all text-sm";
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-gray-50 pb-24">
+    <div ref={pageRef} className="min-h-screen bg-gray-50 pb-24 pt-[105px]">
       {/* Credit Card Error Popup */}
       <AnimatePresence>
         {showCardError && (
@@ -530,7 +530,7 @@ export default function CheckoutPage() {
       <motion.div
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white h-[45px] px-3 relative overflow-hidden flex items-center justify-center"
+        className="fixed top-[60px] left-0 right-0 z-40 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white h-[45px] px-3 relative overflow-hidden flex items-center justify-center"
       >
         {/* Animated background shine */}
         <motion.div
