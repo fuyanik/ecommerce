@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from "../assets/bottomNavbarLogo3.png";
+
 import { 
   HiOutlineShoppingCart, 
   HiShoppingCart,
