@@ -14,35 +14,32 @@ import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
 import { useProducts } from '@/context/ProductsContext';
 import yilsonu from '@/assets/yilsonu.png';
-
+import hp from '@/assets/hp.png';
+import main1 from '@/assets/main1.png';
+import main2 from '@/assets/main2.png';
+import main3 from '@/assets/main3.png';
+import main4 from '@/assets/main4.png';
 const heroSlides = [
   {
-    title: 'Bilgisayar',
-    subtitle: 'Yeni yıla güçlü bir başlangıç yapın',
-    discount: '🎄 Yılbaşı Özel %40 İndirim',
-    image: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1200',
-    link: '/kategori/bilgisayar'
-  },
-  {
     title: 'Yazıcı',
-    subtitle: 'Ev ve ofis için profesyonel çözümler',
-    discount: '🎁 Yılbaşı Özel %35 İndirim',
+    subtitle: 'Ofis için profesyonel yazıcı çözümleri',
+    discount: '🔥 %45 İndirim',
     image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=1200',
     link: '/kategori/yazici'
   },
   {
-    title: 'Tablet',
-    subtitle: 'Taşınabilirlik ve performans bir arada',
-    discount: '❄️ Yılbaşı Özel %30 İndirim',
-    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=1200',
-    link: '/kategori/tablet'
+    title: 'Çalışma Koltukları',
+    subtitle: 'Rahat ve ergonomik ofis koltukları',
+    discount: '💼 %50 İndirim',
+    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200',
+    link: '/kategori/koltuk-takimi'
   },
   {
-    title: 'Akıllı Saat',
-    subtitle: 'Teknoloji bileğinizde, sağlık kontrolünüzde',
-    discount: '🎅 Yılbaşı Özel %25 İndirim',
-    image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=1200',
-    link: '/kategori/akilli-saat'
+    title: 'Bilgisayar',
+    subtitle: 'Güçlü performans, verimli çalışma',
+    discount: '⚡ %40 İndirim',
+    image: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1200',
+    link: '/kategori/bilgisayar'
   }
 ];
 
@@ -53,46 +50,17 @@ const features = [
   { icon: HiOutlineSupport, title: '7/24 Destek', description: 'Her zaman yanınızda' },
 ];
 
-const socialProofMessages = [
-  { icon: HiOutlineUserGroup, text: '1.427', label: 'kişi bugün alışveriş yaptı' },
-  { icon: HiOutlineEye, text: '2.873', label: 'kişi siteyi inceliyor' },
-];
-
-function SocialProofBanner() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % socialProofMessages.length);
-    }, 3500);
-    return () => clearInterval(interval);
-  }, []);
-
-  const current = socialProofMessages[currentIndex];
-  const Icon = current.icon;
-
+function HPAuthorizedBanner() {
   return (
-    <div className="bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 py-2 px-4 overflow-hidden">
-      <div className="max-w-7xl mx-auto flex items-center justify-center text-white text-xs sm:text-sm">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
-            className="flex items-center gap-2"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-            </span>
-            <Icon className="w-4 h-4" />
-            <span className="font-medium">
-              <span className="font-bold">{current.text}</span> {current.label}
-            </span>
-          </motion.div>
-        </AnimatePresence>
+    <div className="fixed top-[46px] left-0 right-0 z-50 bg-[rgb(219,250,124)] h-[32px] px-4 overflow-hidden flex items-center">
+      <div className="max-w-7xl gap-2 mx-auto flex items-center justify-center text-black text-xs sm:text-sm">
+       
+          <Image src={hp} alt="HP Yetkili Satıcısı" width={20} height={20} />
+          <span className="font-semibold tracking-wide">
+            HP Yetkili Satıcısı
+          </span>
+        
+        
       </div>
     </div>
   );
@@ -128,49 +96,12 @@ export default function HomePage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pt-[8vh]">
-      {/* Social Proof Banner */}
-      <SocialProofBanner />
+    <div className="bg-gray-50 min-h-screen pt-[11vh]">
+      {/* HP Yetkili Satıcısı Banner */}
+      <HPAuthorizedBanner />
 
-      {/* Hero Slider - Yılbaşı Teması */}
+      {/* Hero Slider - Ofis Teması */}
       <section className="relative overflow-hidden">
-        {/* Kar yağışı efekti - CSS animation ile */}
-        <style jsx>{`
-          @keyframes snowfall {
-            0% {
-              transform: translateY(-10px) translateX(0);
-              opacity: 0;
-            }
-            10% {
-              opacity: 1;
-            }
-            90% {
-              opacity: 1;
-            }
-            100% {
-              transform: translateY(100vh) translateX(20px);
-              opacity: 0;
-            }
-          }
-        `}</style>
-        <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-          {[...Array(30)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute bg-white rounded-full"
-              style={{
-                left: `${(i * 3.5) % 100}%`,
-                top: '-10px',
-                width: `${3 + (i % 3)}px`,
-                height: `${3 + (i % 3)}px`,
-                opacity: 0.4 + (i % 3) * 0.2,
-                animation: `snowfall ${4 + (i % 4)}s linear infinite`,
-                animationDelay: `${(i * 0.3) % 4}s`
-              }}
-            />
-          ))}
-        </div>
-
         <Swiper
           modules={[Autoplay, Pagination]}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
@@ -188,12 +119,12 @@ export default function HomePage() {
                   className="object-cover"
                   priority={index === 0}
                 />
-                {/* Yılbaşı temalı gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-red-900/85 via-red-800/70 to-emerald-900/80" />
+                {/* Ofis temalı gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-900/85 via-indigo-800/75 to-slate-900/80" />
                 
-                {/* Dekoratif köşe süslemeleri */}
-                <div className="absolute top-4 right-4 text-4xl md:text-6xl opacity-30 z-10">🎄</div>
-                <div className="absolute bottom-4 left-4 text-3xl md:text-5xl opacity-20 z-10">❄️</div>
+                {/* Dekoratif ofis ikonları */}
+                <div className="absolute top-4 right-4 text-4xl md:text-6xl opacity-20 z-10">💼</div>
+                <div className="absolute bottom-4 left-4 text-3xl md:text-5xl opacity-15 z-10">📊</div>
                 
                 <div className="absolute inset-0 flex items-center z-20">
                   <div className="max-w-7xl mx-auto px-4 w-full">
@@ -203,15 +134,15 @@ export default function HomePage() {
                       transition={{ delay: 0.2 }}
                       className="max-w-lg"
                     >
-                      {/* Yılbaşı indirimi etiketi */}
-                      <span className="inline-block px-4 py-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full text-sm font-bold text-red-900 mb-4 shadow-lg shadow-yellow-500/30 animate-pulse">
+                      {/* İndirim etiketi */}
+                      <span className="inline-block px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full text-xs font-bold text-white mb-3 shadow-lg shadow-red-500/50 animate-pulse">
                         {slide.discount}
                       </span>
                       
-                      {/* Yılbaşı Özel başlığı */}
+                      {/* Ofis Özel başlığı */}
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-yellow-400 text-sm font-semibold tracking-wider uppercase">
-                          ✨ 2025 Yılbaşı Özel ✨
+                        <span className="text-blue-300 text-sm font-semibold tracking-wider uppercase">
+                          ⚡ Ofis Çözümleri ⚡
                         </span>
                       </div>
                       
@@ -223,10 +154,10 @@ export default function HomePage() {
                       </p>
                       <Link
                         href={slide.link}
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-red-900 font-bold rounded-full hover:from-yellow-300 hover:to-amber-400 transition-all shadow-lg shadow-yellow-500/30 hover:shadow-xl hover:shadow-yellow-500/40 hover:scale-105 transform"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-full hover:from-blue-400 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/50 hover:shadow-xl hover:shadow-blue-500/60 hover:scale-105 transform"
                       >
                         Keşfet
-                        <HiOutlineChevronRight className="w-5 h-5" />
+                        <HiOutlineChevronRight className="w-4 h-4" />
                       </Link>
                     </motion.div>
                   </div>
@@ -238,7 +169,7 @@ export default function HomePage() {
         
       </section>
 
-{/* Featured Products - Horizontal Scroll */}
+     {/* Featured Products - Horizontal Scroll */}
       {featuredProducts.length > 0 && (
         <section className="py-8 bg-gradient-to-b from-white to-gray-50">
           <div className="max-w-7xl mx-auto">
@@ -249,7 +180,7 @@ export default function HomePage() {
                   <HiOutlineFire className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Öne Çıkan Ürünler</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Yıl Sonu Özel Fırsatlar</h2>
                   <p className="text-sm text-gray-500">En çok tercih edilen ürünler</p>
                 </div>
               </div>
@@ -298,8 +229,10 @@ export default function HomePage() {
           </div>
         </section>
       )}
+      <Image src={main1} alt="yilsonu" className='w-full h-[17vh] object-contain' />
+      <Image src={main2} alt="yilsonu" className='w-full h-[8vh] object-contain' />
 
-      {/* School Shopping - Okul Alışverişi */}
+      {/* Yazıcı Modelleri - Okul Alışverişi */}
       {schoolShoppingProducts.length > 0 && (
         <section className="py-8 bg-gradient-to-b from-gray-50 to-white">
           <div className="max-w-7xl mx-auto">
@@ -310,8 +243,8 @@ export default function HomePage() {
                   <HiOutlineAcademicCap className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Okul Alışverişi</h2>
-                  <p className="text-sm text-gray-500">Okula dönüş hazırlıkları</p>
+                  <h2 className="text-xl font-bold text-gray-900">Yazıcı Modelleri</h2>
+                  <p className="text-sm text-gray-500">Yazıcı modellerimizi keşfedin</p>
                 </div>
               </div>
               <Link 
@@ -360,6 +293,7 @@ export default function HomePage() {
         </section>
       )}
 
+      <Image src={main3} alt="yilsonu" className='w-full h-[17vh] object-contain' />
       {/* Most Favorited - En Çok Favorilenenler */}
       {mostFavoritedProducts.length > 0 && (
         <section className="py-8 bg-gradient-to-b from-white to-pink-50/50">
@@ -421,8 +355,8 @@ export default function HomePage() {
         </section>
       )}
 
-       <div className='w-full h-[40vh] rounded-lg overflow-hidden flex items-center px-3'> 
-        <Image className='w-full  object-contain rounded-lg' src={yilsonu} alt="yilsonu"  />
+       <div className='w-full h-[50vh] rounded-lg overflow-hidden flex items-center px-3'> 
+        <Image className='w-full  object-contain rounded-lg' src={main4} alt="yilsonu"  />
         
         </div> 
 
@@ -557,7 +491,7 @@ export default function HomePage() {
               </div>
             </Link>
             
-            <Link href="/kategori/yazici" className="group">
+            <Link href="/kategori/tankli-yazici" className="group">
               <div className="relative h-48 md:h-56 rounded-2xl overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=800"

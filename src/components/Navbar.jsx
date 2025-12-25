@@ -30,7 +30,7 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { useProducts } from '@/context/ProductsContext';
 import PromoBanner from './PromoBanner';
-import logosaydam from '../assets/logosaydam.png';
+import logosaydam from '../assets/logo3.png';
 
 // Animated Logo Component with shine effect
 function Logo() {
@@ -41,7 +41,7 @@ function Logo() {
           {/* Background glow effect */}
         
           
-          <Image  src={logosaydam} alt="Logo" width={120} height={140} />
+          <Image  src={logosaydam} alt="Logo" width={140} height={140} />
       
         </div>
         
@@ -114,20 +114,35 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Promo Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <PromoBanner />
-      </div>
+      {/* Promo Banner - En Üstte */}
+      <PromoBanner />
       
       <nav 
-        className={`fixed top-[45px] left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-[78px] left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled ? 'bg-white shadow-sm border-b border-gray-100' : 'bg-white/80 backdrop-blur-md'
         }`}
       >
         <div className="max-w-7xl mx-auto px-1">
           <div className="h-[60px] flex items-center justify-between">
-            {/* Logo */}
-            <Logo />
+            {/* Left Side - Cart Button */}
+            <div className="flex items-center">
+              <Link
+                href="/sepet"
+                className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 relative"
+              >
+                <HiOutlineShoppingBag className="w-5 h-5" />
+                {getCartCount() > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                    {getCartCount()}
+                  </span>
+                )}
+              </Link>
+            </div>
+
+            {/* Center - Logo */}
+            <div className="absolute left-1/2 transform -translate-x-1/2">
+              <Logo />
+            </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
@@ -147,17 +162,6 @@ export default function Navbar() {
 
             {/* Right Icons */}
             <div className="flex items-center gap-1">
-              {/* WhatsApp Button */}
-              <a
-                href="https://wa.me/905513545603"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
-              >
-                <FaWhatsapp className="w-5 h-5" />
-                <span className="text-xs font-xs whitespace-nowrap">7/24 Destek</span>
-              </a>
-
               {/* Search Button */}
               <button 
                 onClick={() => setIsSearchOpen(true)}
@@ -391,7 +395,7 @@ export default function Navbar() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">7/24 Müşteri Hizmetleri</p>
-                    <p className="font-semibold text-gray-900">0850 123 45 67</p>
+                    <p className="font-semibold text-gray-900">+90 551 354 56 03</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -400,7 +404,7 @@ export default function Navbar() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Mağazamızı Ziyaret Edin</p>
-                    <p className="font-medium text-gray-900 text-sm">Manisa, Türkiye</p>
+                    <p className="font-medium text-gray-900 text-sm">Keçiliköy OSB, 45030 Yunusemre/Manisa, Türkiye</p>
                   </div>
                 </div>
               </div>
