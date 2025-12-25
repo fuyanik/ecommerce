@@ -299,7 +299,7 @@ export default function HomePage() {
         </section>
       )}
 
-      <Image src={main3} alt="yilsonu" className='w-full h-[17vh] object-contain' />
+      <Image unoptimized src={main3} alt="yilsonu" className='w-full h-[17vh] object-contain' />
       {/* Most Favorited - En Çok Favorilenenler */}
       {mostFavoritedProducts.length > 0 && (
         <section className="py-8 bg-gradient-to-b from-white to-pink-50/50">

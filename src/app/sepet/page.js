@@ -256,6 +256,7 @@ export default function CartPage() {
               <Link href={`/urun/${item.id}`} className="flex-shrink-0">
                 <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-gray-100">
                   <Image
+                  unoptimized
                     src={item.images?.[0] || '/placeholder.png'}
                     alt={item.name}
                     fill

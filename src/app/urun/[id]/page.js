@@ -283,6 +283,11 @@ export default function ProductPage({ params }) {
                   className="object-contain"
                   priority={index === 0}
                   unoptimized
+                  loader={({ src }) => src}
+                  onError={(e) => {
+                    console.error('Image load error:', image);
+                    e.target.src = '/placeholder.png';
+                  }}
                 />
               </div>
             </SwiperSlide>
